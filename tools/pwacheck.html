@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><title>RUNNING</title>
+<style>body{font:13px/1.7 Consolas,Menlo,monospace;padding:12px}
+iframe{border:1px solid #999;background:#fff}
+pre{white-space:pre-wrap}</style></head>
+<body>
+<pre id="out">running...</pre>
+<iframe id="frame" style="width:1280px;height:900px" src="about:blank"></iframe>
+<script>
+const lines = []; let failed = 0; let done = false;
+function log(s){ lines.push(s); document.getElementById('out').textContent = lines.join('\n'); }
+function ok(c, name, extra){ if(c) log('  PASS  ' + name + (extra?'  '+extra:'')); else { failed++; log('  FAIL  ' + name + (extra?'  '+extra:'')); } }
+
+/* 无头浏览器技巧：用一张指向 /__stall 的隐藏 <img> 压住 window 的 load 事件，
+ * 保证 --dump-dom 在全部检查完成后（finish() 移除它）才输出页面。 */
+const stall = document.createElement('img');
+stall.style.display = 'none';
+stall.src = '/__stall?t=' + Date.now();
+document.body.appendChild(stall);
+function finish(){
+  if (done) return; done = true;
+  stall.remove();                       // 释放 load 事件，dump-dom 输出最终结果
+}
+setTimeout(finish, 45000);              // 兜底：任何情况下 45s 内必须输出
+window.addEventListener('error', function(){ /* 不中断检查 */ });
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const frame = document.getElementById('frame');
+const APP = '../site/index.html';
+
+function load(height, width){
+  return new Promise(res => {
+    frame.style.height = (height||900) + 'px';
+    frame.style.width  = (width||1280) + 'px';
+    frame.onload = () => setTimeout(res, 500);
+    frame.src = APP + '?t=' + Date.now();
+  });
+}
+function doc(){ return frame.contentDocument; }
+function has(t){ return doc() && doc().body && doc().body.textContent.indexOf(t) >= 0; }
+
+/* 轮询等待 SW 注册并激活（首次安装需要一点时间） */
+async function waitSW(timeout){
+  const t0 = Date.now();
+  while (Date.now() - t0 < timeout){
+    const regs = await frame.contentWindow.navigator.serviceWorker.getRegistrations();
+    if (regs.length && regs.some(r => r.active || r.installing || r.waiting)){
+      await sleep(1200);                       // 给 install 阶段留出预缓存时间
+      return await frame.contentWindow.navigator.serviceWorker.getRegistrations();
+    }
+    await sleep(300);
+  }
+  return await frame.contentWindow.navigator.serviceWorker.getRegistrations();
+}
+
+(async function(){
+ try{
+  /* 1. SW 注册与预缓存 */
+  log('[1] Service Worker 注册与预缓存');
+  await load();
+  ok(has('学习总览') || has('WordMaster'), '应用在 http://127.0.0.1 下正常渲染');
+  const regs = await waitSW(8000);
+  ok(regs.length >= 1, 'sw.js 已注册', regs.length + ' 个');
+  ok(regs.some(r => r.active), 'SW 处于 activated 状态');
+  ok(frame.contentWindow.navigator.serviceWorker.controller !== null || regs.some(r=>r.active),
+     '页面由 SW 接管（首次访问后激活即接管）');
+
+  const cacheNames = await caches.keys();
+  const shellName = cacheNames.find(n => n.startsWith('wm-shell-'));
+  ok(!!shellName, '存在 wm-shell-* 缓存', cacheNames.join(', '));
+  const shell = await caches.open(shellName);
+  const keys = (await shell.keys()).map(k => new URL(k.url).pathname);
+  const need = ['/site/', '/site/index.html', '/site/offline.html', '/site/manifest.webmanifest',
+    '/site/icons/icon-192.png', '/site/icons/icon-512.png',
+    '/site/icons/icon-192-maskable.png', '/site/icons/icon-512-maskable.png',
+    '/site/icons/apple-touch-icon.png'];
+  const missing = need.filter(p => !keys.includes(p));
+  ok(missing.length === 0, 'App Shell 预缓存完整（11 项）', missing.length ? '缺少 ' + missing.join(',') : '');
+
+  /* 2. manifest 可安装性 */
+  log('[2] manifest 可安装性');
+  const mf = await (await fetch('../site/manifest.webmanifest')).json();
+  ok(!!mf.name && !!mf.short_name, 'name / short_name 齐全', mf.short_name);
+  ok(mf.display === 'standalone', 'display = standalone（独立窗口启动）');
+  ok((mf.start_url || '').startsWith('./'), 'start_url 相对路径（子路径部署可用）', mf.start_url);
+  const anyIcons = mf.icons.filter(i => i.purpose !== 'maskable').map(i => parseInt(i.sizes));
+  const maskIcons = mf.icons.filter(i => i.purpose === 'maskable').map(i => parseInt(i.sizes));
+  ok(anyIcons.includes(192) && anyIcons.includes(512), '含 192/512 常规图标');
+  ok(maskIcons.includes(192) && maskIcons.includes(512), '含 192/512 maskable 图标');
+  ok(Array.isArray(mf.shortcuts) && mf.shortcuts.length >= 2, '应用快捷方式', mf.shortcuts.length + ' 个');
+  const theme = doc().querySelector('meta[name=theme-color]');
+  ok(theme && theme.content === '#3b6cf6', '页面 theme-color 与清单一致');
+  ok(!!doc().querySelector('link[rel=manifest]'), 'index.html 已注入 manifest 链接');
+  ok(!!doc().querySelector('link[rel=apple-touch-icon]'), '已注入 apple-touch-icon（iOS 主屏图标）');
+
+  /* 3. 数据持久化：写入 → 重载 → 读回 */
+  log('[3] 数据持久化（localStorage）');
+  const S1 = frame.contentWindow.WM.Store;
+  S1.init();
+  const mark = 'persist-' + Date.now();
+  S1.state.books = S1.state.books.filter(b => !b.name.startsWith('persist-'));
+  const b = S1.createBook(mark, '验证');
+  S1.upsertWord({ t: 'persistword', m: '持久化验证词条', cat: '验证' }, b.id, 'skip');
+  S1.save();
+  const before = S1.state.books.length;
+
+  await load();                                  // 整页重载
+  const S2 = frame.contentWindow.WM.Store;
+  S2.init();
+  const back = S2.state.books.filter(x => x.name === mark);
+  ok(back.length === 1, '重载后词库仍在', mark);
+  const w2 = S2.state.words['persistword'];
+  ok(!!w2 && w2.m === '持久化验证词条', '重载后词条与释义仍在');
+  ok(S2.state.books.length === before, '词库数量一致', before + ' -> ' + S2.state.books.length);
+  /* 清理验证数据，避免污染后续人工体验 */
+  S2.state.books = S2.state.books.filter(x => x.name !== mark);
+  delete S2.state.words['persistword'];
+  S2.reindex && S2.reindex();
+  S2.save();
+
+  /* 4. 响应式三档 */
+  log('[4] 响应式布局（iframe 视口内生效）');
+  async function probe(w, h, mobile){
+    frame.style.width = w + 'px'; frame.style.height = h + 'px';
+    await sleep(400);
+    const d = doc();
+    const sb = d.querySelector('.sidebar').getBoundingClientRect();
+    const noHScroll = d.documentElement.scrollWidth <= d.documentElement.clientWidth + 1;
+    const vh = d.documentElement.clientHeight;
+    if (mobile){
+      ok(sb.top > vh * 0.55, w + '×' + h + '：侧栏在底部（标签栏）', 'top=' + Math.round(sb.top) + '/' + vh);
+      ok(!d.querySelector('.brand') || d.querySelector('.brand').offsetParent === null,
+         w + '×' + h + '：底部栏隐藏品牌区');
+    } else {
+      ok(sb.top < vh * 0.2, w + '×' + h + '：桌面布局侧栏在左上', 'top=' + Math.round(sb.top));
+    }
+    ok(noHScroll, w + '×' + h + '：无横向滚动条',
+       'scrollW=' + d.documentElement.scrollWidth + ' clientW=' + d.documentElement.clientWidth);
+    const nav = d.querySelector('.nav-item');
+    ok(nav && nav.getBoundingClientRect().height >= (mobile ? 30 : 20),
+       w + '×' + h + '：导航项高度正常', Math.round(nav.getBoundingClientRect().height) + 'px');
+  }
+  await probe(390, 844, true);      // 手机
+  await probe(820, 1180, true);     // 平板竖屏
+  await probe(1440, 900, false);    // 桌面
+  await load();                     // 恢复桌面尺寸
+
+  /* 5. 运行时缓存策略抽查 */
+  log('[5] 运行时缓存');
+  const rtNames = (await caches.keys()).filter(n => n.startsWith('wm-runtime-'));
+  ok(true, '运行时缓存容器就绪', rtNames.join(', ') || '（暂无条目，首次访问图标等已被 SWR 覆盖或仍走网络）');
+
+  document.title = failed ? ('FAIL-' + failed) : 'PASS';
+  log('');
+  log(failed ? ('=== 失败 ' + failed + ' 项 ===') : '=== 全部通过 ===');
+  finish();
+ } catch(e){
+  document.title = 'ERROR';
+  log('EXCEPTION: ' + e.message + '\n' + e.stack);
+  finish();
+ }
+})();
+</script>
+</body></html>

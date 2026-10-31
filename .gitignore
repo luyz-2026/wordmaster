@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# 临时/调试产物
+tools/_*
+tools/**/_*
+*.log
+
+# 编辑器和系统文件
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# 可选：本地拉取的蓝本大词库（默认不入库，避免仓库膨胀）
+cet4_vocab_full.csv

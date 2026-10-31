@@ -1,0 +1,690 @@
+﻿index,word,phonetic,phonetic_us,pos,meaning
+1,personal,['pə:sənl],,adj.,私人的
+2,tie,[taɪ],,v.,系，联系
+3,still,[stɪl],,adj.； adv.,静止的； 甚至，仍然
+4,offer,['ɔ:fə],,v.,提供
+5,addition,[ə'diʃən],,n.,增加
+6,success,[sək'ses],,n.,成功
+7,produce,[prə'dju:s],,v.,生产，引起
+8,expect,[iks'pekt],,v.,预料，期待
+9,cause,[kɔ:z],,v.； n.,引起； 原因，事业
+10,state,[steɪt],,n.； v.,情形，状态； 声明
+11,manage,['mænidʒ],,v.,管理，设法（to）
+12,directly,[di'rektli],,adv.,直接地
+13,improve,[im'pru:v],,v.,改善，提高
+14,wonder,['wʌndə],,n.； v.,奇迹； 想知道
+15,present,['preznt],,adj.； v.； n.,当前的，出席的； 呈现； 礼物
+16,underline,[.ʌndə'lain],,v.,在…下面划线，强调
+17,mislead,[mis'li:d],,v.,误导
+18,complete,[kəm'pliːt],,v.； adj.,完成； 完成的
+19,lead,[li:d],,v.； n.,"导致（to），带领；过（…的生活）；
+领头位置"
+20,sensitive,['sensitiv],,adj.,敏感的
+21,valuable,['væljuəbl],,adj.,贵重的
+22,courageous,[kə'reɪdʒəs],,adj.,勇敢的
+23,tend,[tend],,v.,趋向，照顾（to）
+24,matter,['mætə],,n.； v.,事情； 要紧
+25,realise,['riəlaiz],,v.,意识到，实现（梦想）
+26,acceptable,[ək'septəbl],,adj.,可接受的
+27,consider,[kən'sidə],,v.,考虑，认为
+28,support,[sə'pɔːt],,v.,支持
+29,fit,[fit],,adj.； v.,适宜的；健康的； 安装(in)，适合
+30,hang,[hæŋ],,v.,悬挂
+31,protect,[prə'tekt],,v.,保护
+32,professional,[prə'feʃənəl],,adj.; n.,专业的；职业的 职业人士，专业人员
+33,widen,['waidn],,v.,使变宽
+34,require,[ri'kwaiə],,v.,要求
+35,creative,[kri'eɪtɪv],,adj.,创造性的
+36,deal,[di:l],,v.； n.,处理（with）； 交易
+37,popularity,[.pɔpju'læriti],,n.,普及，流行
+38,attend,[ə'tend],,v.,出席，关心（to）；处理(to)
+39,prefer,[pri'fə:],,v.,更喜欢
+40,wild,[waild],,adj.,野生的
+41,quality,['kwɔliti],,n.,质量，品质
+42,perform,[pə'fɔ:m],,v.,执行，表演
+43,promise,['prɔmis],,n.； v.,诺言； 允诺，答应
+44,necessarily,['nesəserili],,adv.,必然地
+45,store,[stɔː(r)],,v.； n.,储存； 商店
+46,general,['dʒenərəl],,adj.,普遍的
+47,condition,[kən'dɪʃn],,n.,情况，条件
+48,vary,['vɛəri],,v.,改变，不同
+49,suffer,['sʌfə(r)],,v.,遭受(from)
+50,speech,[spiːtʃ],,n.,演讲
+51,respect,[ri'spekt],,v.； n.,尊敬，尊重； 尊敬，尊重
+52,disappoint,[disə'pɔint],,v.,使失望
+53,simplify,['simplifai],,v.,简化，使简单
+54,raise,[reiz],,v.,举起，筹集，提出
+55,refer,[ri'fə:],,v.,涉及，提到；查阅（to）
+56,achievement,[ə'tʃi:vmənt],,n.,成就
+57,particular,[pə'tikjulə],,adj.,特别的
+58,prevent,[pri'vent],,v.,阻止
+59,regular,['regjulə],,adj.,有规律的，定期的
+60,connect,[kə'nekt],,v.,连接，联系(with)
+61,subject,['sʌbdʒɪkt],,n.； adj.,主题，实验对象； 服从的
+62,physical,['fizikəl],,adj.,物质的，身体的
+63,check,[tʃek],,n.； v.,支票，检查； 核对
+64,position,[pə'ziʃən],,n.； v.,位置，立场； 定位，安置
+65,concern,[kən'sɜːn],,v.,关心(about)，涉及
+66,force,[fɔ:s;fəurs],,v.； n.,强迫； 力量
+67,satisfy,['sætisfai],,v.,使满意
+68,organize,['ɔ:gənaiz],,v.,组织，安排
+69,charge,[tʃɑ:dʒ],,n.； v.,费用，指控； 要价(for)，管理，充电
+70,favor,['feivə],,n.； v.,好意； 偏爱
+71,damage,['dæmidʒ],,v.； n.,损害； 损害
+72,publish,['pʌbliʃ],,v.,出版，发行
+73,focus,['fəukəs],,n.； v.,焦点； 聚焦(on)
+74,affect,[ə'fekt],,v.,影响
+75,feed,[fiːd],,v.,喂养，以……为食(on)
+76,weigh,[wei],,v.,称(重量)，重达
+77,pressure,['preʃə],,n.,压力，压强
+78,credit,['kredɪt],,n.,信用
+79,visible,['vizəbl],,adj.,可见的
+80,operate,['ɔpəreit],,v.,操作，经营，动手术(on)
+81,warn,[wɔ:n],,v.,警告
+82,relate,[ri'leit],,v.,有关联(to)，陈述
+83,strength,[streŋθ],,n.,力量
+84,stress,[stres],,v.； n.,强调； 压力，强调
+85,attack,[ə'tæk],,n.； v.,攻击； 攻击
+86,determine,[di'tə:min],,v.,下决心
+87,volunteer,[vɔlən'tiə],,n.； v.,志愿者； (自愿)做
+88,lack,[læk],,n.； v.,缺乏； 缺乏(of/in)
+89,equipment,[i'kwipmənt],,n.,设备
+90,expense,[iks'pens],,n.,花费
+91,deliver,[di'livə],,v.,递送，发表（演讲），生孩子，给……接生
+92,compare,[kəm'peə(r)],,v.,比较(with)；比喻(to)
+93,spread,[spred],,v.,延伸，传播
+94,seek,[si:k],,v.,寻找
+95,distant,['distənt],,adj.,遥远的
+96,original,[ə'ridʒənl],,adj.,原始的，最初的
+97,impress,[im'pres],,v.,使...有印象(on)
+98,remind,[ri'maind],,v.,提醒(of)
+99,communicate,[kə'mjuːnɪkeɪt],,v.,交流(with)
+100,range,[reindʒ],,n.； v.,范围； 涉及(from...to...)
+101,guidance,['gaidəns],,n.,指导
+102,avoid,[ə'vɔid],,v.,避免
+103,opportunity,"[,ɔpə'tju:niti]",,n.,机会
+104,emotion,[i'məuʃən],,n.,情绪
+105,equal,['i:kwəl],,adj.； v.,相等的； 等于(to)
+106,contain,[kən'tein],,v.,包含
+107,hardly,['hɑ:dli],,adv.,几乎不
+108,announce,[ə'nauns],,v.,宣布
+109,reward,[ri'wɔ:d],,v.； n.,奖赏； 报酬
+110,desire,[di'zaiə],,n.； v.,渴望； 渴望
+111,promote,[prə'məut],,v.,促进，促销，升迁
+112,gather,['gæðə],,v.； n.,聚集； 聚集
+113,similarity,"[,simi'læriti]",,n.,相似，类似
+114,advance,[əd'vɑ:ns],,n.； adj.,前进； 提前的
+115,percent,[pə'sent],,n.,百分比
+116,character,['kæriktə],,n.,个性，人物，汉字
+117,frighten,['fraitən],,v.,使惊吓
+118,accessible,[æk'sesəbl],,adj.,易接近的；可得到的
+119,potential,[pə'tenʃəl],,adj.； n.,潜在的； 潜力
+120,review,[ri'vju:],,v.； n.,复习； 复习，评论
+121,replace,[ri'pleis],,v.,取代
+122,greedy,['gri:di],,adj.,贪婪的
+123,shock,[ʃɔk],,n.； v.,震惊； 使震惊
+124,judge,[dʒʌdʒ],,v.； n.,判断； 法官，裁判
+125,praise,[preiz],,n.； v.,称赞； 称赞
+126,recover,[ri'kʌvə],,v.,恢复
+127,confuse,[kən'fjuːz],,v.,使困惑
+128,spot,[spɒt],,n.； v.,地点； 发现
+129,attempt,[ə'tempt],,v.； n.,企图，尝试(to)； 试图
+130,available,[ə'veiləbl],,adj.,可利用的(to)，可获得的，有空的
+131,destruction,[di'strʌkʃən],,n.,破坏，毁灭
+132,construct,[kən'strʌkt],,v.,建造，构造
+133,function,['fʌŋkʃən],,n.； v.,功能； 起作用
+134,argument,['ɑ:gjumənt],,n.,观点(on/about)，争论
+135,labor,['leibə],,n.,劳力
+136,private,['praivit],,adj.,私人的，秘密的
+137,repeat,[ri'pi:t],,v.,重复
+138,spirit,['spɪrɪt],,n.,精神
+139,suppose,[sə'pəʊz],,v.,假设，认为
+140,desert,"['dezət,di'zə:t]",,n.； v.,沙漠； 遗弃
+141,exchange,[iks'tʃeindʒ],,n.； v.,交换； 交换(for)
+142,fairly,['fɛəli],,adv.,公正地，相当地
+143,regret,[ri'gret],,v.； n.,后悔； 后悔
+144,strict,[strɪkt],,adj.,严格的(with)
+145,fellow,['feləu],,n.,同事，家伙
+146,gradually,['grædjuəli],,adv.,逐渐地
+147,belief,[bi'li:f],,n.,信念，信仰
+148,imagination,[iˌmædʒi'neiʃən],,n.,想象力
+149,official,[ə'fiʃəl],,adj.,正式的；官方的
+150,account,[ə'kaunt],,n.； v.,帐户，事情； 说明（for）
+151,persuade,[pə'sweid],,v.,说服
+152,figure,['figə],,n.； v.,人物；算出，领会(out)
+153,seldom,['seldəm],,adv.,很少
+154,eager,['i:gə],,adj.,渴望的(to)
+155,recommend,[.rekə'mend],,v.,推荐，建议
+156,remove,[ri'mu:v],,v.,移除
+157,unique,[ju:'ni:k],,adj.,唯一的
+158,risk,[risk],,v.； n.,冒...的危险； 危险，风险
+159,economic,"[,i:kə'nɔmik]",,adj.,经济的
+160,pollution,[pə'lu:ʃən],,n.,污染
+161,literature,['litərətʃə],,n.,文学
+162,consume,[kən'sju:m],,v.,消耗，消费
+163,stick,[stɪk],,v.,粘住，坚持(to)
+164,devote,[di'vəut],,v.,致力于(to)
+165,predict,[pri'dikt],,v.,预言
+166,complain,[kəm'pleɪn],,v.,抱怨(about)
+167,annoy,[ə'nɔi],,v.,使恼怒
+168,apply,[ə'plai],,v.,应用(to)，申请(for)
+169,handle,['hændl],,v.,处理
+170,object,[əb'dʒekt],,v.； n.,反对(to)； 目标，物体
+171,select,[si'lekt],,v.,挑选
+172,opposite,['ɔpəzit],,adj.,相反的，对面的
+173,solution,[sə'lu:ʃən],,n.,解决办法
+174,struggle,['strʌɡl],,n.； v.,斗争，挣扎； 斗争，挣扎(against)
+175,approach,[ə'prəutʃ],,v.； n.,靠近； 途径，方法(to)
+176,urgent,['ə:dʒənt],,adj.,紧急的
+177,delight,[di'lait],,n.; vt.,高兴 使高兴
+178,talent,['tælənt],,n.,天赋，才华
+179,track,[træk],,v.； n.,跟踪； 小路
+180,arrange,[ə'reindʒ],,v.,安排
+181,wealth,[welθ],,n.,财富
+182,security,[si'kju:riti],,n.,安全
+183,entire,[in'taiə],,adj.,全部的
+184,positive,['pɔzitiv],,adj.,积极的
+185,rarely,['rɛəli],,adv.,很少
+186,reflect,[ri'flekt],,v.,反射，反映
+187,contact,['kɔntækt],,v.； n.,接触，联系(with)； 接触，联系
+188,hesitate,['heziteit],,v.,犹豫
+189,permit,[pə'mit],,v.,允许
+190,rapid,['ræpid],,adj.,迅速的
+191,colleague,['kɒliːɡ],,n.,同事
+192,conclude,[kən'kluːd],,v.,总结
+193,host,[həust],,n.； v.,主人，主持人； 主办，主持
+194,version,['və:ʃən],,n.,版本
+195,accommodation,[ə.kɔmə'deiʃn],,n.,住处，适应
+196,possess,[pə'zes],,v.,拥有
+197,collection,[kə'lekʃn],,n.,收集
+198,survive,[sə'vaɪv],,v.,幸存
+199,feature,['fiːtʃə(r)],,n.,特征
+200,appreciate,[ə'pri:ʃieit],,v.,欣赏，感激
+201,embarrass,[im'bærəs],,v.,使尴尬
+202,profit,['prɔfit],,n.； v.,利润，利益； 获利
+203,ancient,['einʃənt],,adj.,古老的
+204,historical,[his'tɔ:rikəl],,adj.,历史的
+205,victim,['viktim],,n.,受害者
+206,broaden,['brɔ:dn],,v.,变宽，扩大
+207,plastic,['plæstik],,n.； adj.,塑料； 可塑的
+208,primary,['praiməri],,adj.,主要的；首要的，初级的
+209,reaction,[ri'ækʃən],,n.,反应(to)
+210,represent,[.repri'zent],,v.,展示，代表
+211,response,[ri'spɔns],,n.,反应，响应(to)
+212,surround,[sə'raʊnd],,v.,包围
+213,average,['ævəridʒ],,adj.,平均的
+214,smooth,[smu:ð],,v.； adj.,使顺利，使光滑； 顺利的，光滑的
+215,cast,[kɑ:st],,v.,投射，掷
+216,chemical,['kemikəl],,adj.； n.,化学的； 药品
+217,prison,['prizn],,n.,监狱
+218,purchase,['pə:tʃəs],,v.； n.,购买； 购买
+219,straight,[streɪt],,adj.,直的，直接的
+220,switch,[swɪtʃ],,v.,转换（on）
+221,treatment,['triːtmənt],,n.,对待，治疗
+222,aware,[ə'wɛə],,adj.,意识到的(of)
+223,narrow,['nærəu],,v.； adj.,（使）变窄； 狭窄的
+224,hire,['haiə],,v.,雇请
+225,shoulder,['ʃəuldə],,n.； v.,肩膀； 肩负
+226,content,"['kɔntent,kən'tent]",,n.； adj.,内容，目录； 满意的(with)
+227,contribute,[kən'tribju:t],,v.,贡献，致力于(to)
+228,concept,['kɒnsept],,n.,概念
+229,concert,['kɒnsət],,n.,音乐会
+230,conflict,['kɒnflɪkt],,n.,冲突
+231,decade,['dekeid],,n.,十年
+232,sincere,[sin'siə],,adj.,真诚的
+233,release,[ri'li:s],,v.； n.,释放； 释放
+234,constant,['kɔnstənt],,adj.,持续不断的
+235,conduct,[kən'dʌkt],,v.,实施
+236,overcome,[ˌəuvə'kʌm],,v.,战胜，克服
+237,recycle,[ri:'saikl],,v.,循环
+238,translate,[træns'leɪt],,v.,翻译
+239,fond,[fɔnd],,adj.,喜欢的(of)
+240,grateful,['greitfəl],,adj.,感激的(to)
+241,guard,[gɑ:d],,v.； n.,保卫； 看守
+242,motivate,['məutiveit],,v.,激发
+243,pause,[pɔ:z],,v.； n.,停顿； 暂停
+244,celebrate,['selibreit],,v.,庆祝
+245,trick,[trɪk],,v.； n.,欺骗； 诡计
+246,anxiety,[æŋ'zaiəti],,n.,焦虑
+247,debate,[di'beit],,v.； n.,辩论； 辩论
+248,delay,[di'lei],,v.； n.,推迟； 耽搁
+249,deserve,[di'zə:v],,v.,值得
+250,schedule,['skedʒul],,n.； v.,时间表； 安排，预定
+251,specific,[spi'sifik],,adj.,特定的，具体的
+252,concentrate,['kɔnsentreit],,v.,专心，集中(on)
+253,quit,[kwit],,v.,停止，放弃
+254,stare,[steə(r)],,v.,凝视(at)
+255,sympathy,['sɪmpəθi],,n.,同情
+256,alternative,[ɔ:l'tə:nətiv],,adj.； n.,供选择的； 替换物
+257,analyze,['ænəlaiz],,v.,分析
+258,ancestor,['ænsistə],,n.,祖宗
+259,aspect,['æspekt],,n.,方面
+260,disability,[disə'biliti],,n.,残疾
+261,admire,[əd'maiə],,v.,钦佩，羡慕
+262,adolescent,[.ædə'lesnt],,adj.； n.,青春期的； 青少年
+263,faithfully,['feiθfəli],,adv.,忠实地
+264,previous,['pri:vjəs],,adj.,以前的
+265,reliable,[ri'laiəbl],,adj.,可靠的
+266,legal,['li:gəl],,adj.,合法的，法律的
+267,compete,[kəm'piːt],,v.,比赛(with/for/against)
+268,symbol,['sɪmbl],,n.,象征
+269,trap,[træp],,n.,陷阱
+270,apologize,[ə'pɔlədʒaiz],,v.,道歉(to sb forsth)
+271,mistaken,[mi'steikən],,adj.,错误的
+272,vehicle,['vi:ikl],,n.,车辆，交通工具
+273,brief,[bri:f],,adj.,短暂的，简短的
+274,sharp,[ʃɑ:p],,adj.,急剧的，锋利的，灵敏的
+275,ordinary,['ɔ:dnri],,adj.,平凡的，普通的
+276,absorb,[əb'sɔ:b],,v.,吸收，吸引
+277,ceremony,['seriməni],,n.,典礼
+278,maintain,[mein'tein],,v.,维持
+279,consequence,['kɔnsikwəns],,n.,后果
+280,citizen,['sɪtɪzn],,n.,市民
+281,violence,['vaiələns],,n.,暴力
+282,bid,[bid],,v.,出价，投标
+283,bitter,['bitə],,adj.,苦的，痛苦的
+284,shame,[ʃeim],,n.,羞愧
+285,bury,['beri],,v.,埋葬
+286,accurate,['ækjurit],,adj.,精确的
+287,adapt,[ə'dæpt],,v.,适应(to)，改编
+288,regardless,[ri'ga:dlis],,adv.,不顾(of)
+289,commercial,[kə'mɜːʃl],,adj.,商业的
+290,confidence,['kɒnfɪdəns],,n.,信心
+291,amaze,[ə'meiz],,v.,使吃惊
+292,amuse,[ə'mju:z],,v.,娱乐
+293,attach,[ə'tætʃ],,v.,附上，系上(to)
+294,typical,['tipikəl],,adj.,特有的，典型的
+295,negative,['negətiv],,adj.,消极的，负面的
+296,species,['spi:ʃi:z],,n.,种类，（单复同形）物种
+297,occasion,[ə'keiʒən],,n.,场合，时机
+298,cautious,['kɔ:ʃəs],,adj.,谨慎的，小心的
+299,engage,[in'geidʒ],,v.,从事(in)，订婚
+300,expose,[ik'spəuz],,v.,揭露，暴露(to)
+301,political,[pə'litikəl],,adj.,政治的
+302,convenient,[kən'vi:njənt],,adj.,方便的
+303,assess,[ə'ses],,v.,评定，评估
+304,astonish,[əs'tɔniʃ],,v.,使惊讶
+305,guarantee,[ˌgærən'ti:],,v.； n.,保证；保证
+306,decline,[di'klain],,v.； n.,下降，拒绝； 衰落
+307,background,['bækgraund],,n.,背景
+308,mysterious,[mis'tiəriəs],,adj.,神秘的
+309,block,[blɔk],,n.； v.,街区； 阻塞
+310,emergency,[i'mə:dʒənsi],,n.,突发事件
+311,sink,[siŋk],,v.,下沉(into)
+312,abandon,[ə'bændən],,v.,放弃，抛弃
+313,adjust,[ə'dʒʌst],,v.,调节，使适应(to)
+314,capital,['kæpitl],,n.； adj.,首都，资本； 大写的，资本的
+315,charm,[tʃɑ:m],,n.,魅力
+316,evaluate,[i'væljueit],,v.,评价
+317,exploit,['eksplɔit],,v.,利用，开发
+318,poison,['pɔizən],,v.,毒害
+319,migrate,['maigreit],,v.,迁移，迁徙
+320,current,['kʌrənt],,adj.,现在的
+321,combine,[kəm'baɪn],,v.,结合(with)
+322,sweep,[swiːp],,v.,打扫，席卷
+323,trade,[treɪd],,n.,贸易
+324,appointment,[ə'pɔintmənt],,n.,约会
+325,guilty,['gilti],,adj.,内疚的(of)，有罪的
+326,moral,['mɔrəl],,adj.,道德的
+327,wander,['wɔndə],,v.,漫步，闲逛
+328,charity,['tʃæriti],,n.,慈善
+329,jog,[dʒɔg],,v.,慢跑
+330,ensure,[in'ʃuə],,v.,确保
+331,poverty,['pɔvəti],,n.,贫困
+332,precise,[pri'sais],,adj.,精确的
+333,conservation,[.kɔnsə:'veiʃən],,n.,保护，保存
+334,consult,[kən'sʌlt],,v.,咨询，请教
+335,crime,[kraɪm],,n.,罪行
+336,complex,['kɒmpleks],,adj.,复杂的
+337,forbid,[fə'bid],,v.,禁止
+338,federal,['fedərəl],,adj.,联邦的
+339,gap,[gæp],,n.,缺口，差距
+340,apparent,[ə'pærənt],,adj.,明显的
+341,unexpected,['ʌnik'spektid],,adj.,想不到的，意外的
+342,unwilling,['ʌn'wiliŋ],,adj.,不愿意的
+343,habitat,['hæbitæt],,n.,栖息地，产地
+344,retire,[ri'taiə],,v.； n.,退休； 退休
+345,defend,[di'fend],,v.,保卫，辩护
+346,withdraw,[wið'drɔ:],,v.,撤回，取回
+347,participate,[pɑ:'tisipeit],,v.,参加，参与(in)
+348,enable,[i'neibl],,v.,使能够
+349,accompany,[ə'kʌmpəni],,v.,陪伴
+350,chief,[tʃi:f],,adj.； n.,主要的，首要的； 首领
+351,explode,[iks'pləud],,v.,爆炸
+352,precious,['preʃəs],,adj.,珍贵的
+353,register,['redʒistə],,v.,注册，登记
+354,remark,[ri'ma:k],,v.； n.,评论； 评论
+355,curiosity,[ˌkjʊəri'ɒsəti],,n.,好奇心
+356,theory,['θɪəri],,n.,理论
+357,thick,[θɪk],,adj.,厚的
+358,affordable,[ə'fɔ:dəbl],,adj.,支付得起的
+359,atmosphere,['ætməsfiə],,n.,大气，氛围
+360,household,['haushəuld],,n.,家庭
+361,humo(u)r,['hju:mə],,n.,幽默
+362,whisper,['wispə],,v.,耳语，私语
+363,wipe,[waip],,v.,擦
+364,optimistic,[ˌɔpti'mistik],,adj.,乐观的
+365,significant,[sig'nifikənt],,adj.,重要的
+366,region,['ri:dʒən],,n.,地区，范围
+367,addiction,[ə'dikʃən],,n.,上瘾(to)
+368,facility,[fə'siliti],,n.,设施
+369,recall,[ri'kɔ:l],,v.,回忆
+370,remote,[ri'məut],,adj.,偏远的
+371,resist,[ri'zist],,v.,抵制，抵抗
+372,tax,[tæks],,n.,税
+373,fascinate,['fæsɪneɪt],,v.,使入迷
+374,ambition,[æm'biʃən],,n.,雄心
+375,appeal,[ə'pi:l],,n.； v.,呼吁； 吸引，呼吁(to)
+376,associate,[ə'səuʃieit],,v.,联系(with)
+377,declare,[di'klɛə],,v.,声明
+378,minor,['mainə],,adj.,较小的，次要的
+379,severe,[si'viə],,adj.,严重的
+380,slip,[slip],,v.,滑倒，溜走
+381,academic,[ækə'demik],,adj.； n.,学术的； 教授
+382,pile,[pail],,n.,堆，大量
+383,pirate,['paiərit],,n.,海盗，盗版者
+384,chain,[tʃein],,n.,链条，一连串
+385,essential,[i'senʃəl],,adj.,本质的，基础的，必要的
+386,psychology,[sai'kɔlədʒi],,n.,心理，心理学
+387,reserve,[ri'zə:v],,v.； n.,预定，保留； 自然保护区
+388,resort,[ri'zɔ:t],,n.,(度假）胜地
+389,consist,[kən'sist],,v.,由…组成(of)，在于(in)
+390,contest,"['kɔntest,kən'test]",,n.； v.,竞赛； 竞赛
+391,command,[kə'mɑːnd],,v.,命令，获得
+392,comprehension,[ˌkɒmprɪ'henʃn],,n.,理解
+393,tough,[tʌf],,adj.,艰难的，棘手的
+394,trend,[trend],,n.； v.,趋势； 倾向
+395,assignment,[ə'sainmənt],,n.,分配，任务
+396,assistant,[ə'sistənt],,n.,助手
+397,bargain,['bɑ:gin],,n.； v.,便宜货； 讨价还价
+398,destination,"[,desti'neiʃən]",,n.,目的地
+399,adopt,[ə'dɔpt],,v.,采用，收养
+400,cheat,[tʃi:t],,n.； v.,骗子； 欺骗
+401,cheque,[tʃek],,n.,支票
+402,preserve,[pri'zə:v],,v.,保护，保存
+403,propose,[prə'pəuz],,v.,计划，提议，求婚
+404,manufacture,[.mænju'fæktʃə],,n.； v.,制造，制造业； 制造
+405,crisis,['kraɪsɪs],,n.,危机
+406,confirm,[kən'fɜːm],,v.,确定
+407,foundation,[faun'deiʃən],,n.,基金会，基础
+408,appropriate,[ə'prəupriət],,adj.,适当的
+409,approve,[ə'pru:v],,v.,赞同，同意(of)
+410,astronaut,['æstrənɔ:t],,n.,宇航员
+411,grant,[grɑ:nt],,v.,授予，认为
+412,routine,[ru:'ti:n],,n.； adj.,例行公事； 常规的，例行的
+413,impractical,[im'præktikəl],,adj.,不切实际的
+414,distinguish,[di'stiŋgwiʃ],,v.,区别(from)
+415,vital,['vaitl],,adj.,至关重要的
+416,absence,['æbsns],,n.,缺乏，缺席
+417,peak,[pi:k],,n.,山峰，顶端
+418,temporary,['tempərəri],,adj.,暂时的
+419,architect,['ɑ:kitekt],,n.,建筑师
+420,universal,[.ju:ni'və:səl],,adj.,普遍的
+421,grasp,[grɑ:sp],,v.； n.,领会，抓住； 抓住，领会
+422,decrease,"['di:kri:s,di:'kri:s]",,v.； n.,降低； 降低
+423,beneficial,[ˌbeni'fiʃəl],,adj.,有益的(to)
+424,define,[di'fain],,v.,定义
+425,vast,[vɑ:st],,adj.,广阔的
+426,witness,['witnis],,v.； n.,目击； 目击者，证人
+427,wrap,[ræp],,v.,包，裹
+428,candidate,['kændidit],,n.,候选人
+429,affair,[ə'fɛə],,n.,事件
+430,acquire,[ə'kwaiə],,v.,获得，学到
+431,certificate,[sə'tifikit],,n.,证书，执照
+432,champion,['tʃæmpjən],,n.； v.,冠军； 保卫
+433,estimate,['estimeit],,v.,估计
+434,exhausted,[ig'zɔ:stid],,adj.,精疲力竭的
+435,refresh,[ri'freʃ],,v.,恢复精神
+436,contract,['kɔntrækt],,n.； v.,合同； 订合同
+437,critical,['krɪtɪkl],,adj.,批评的，决定性的
+438,civil,['sɪvl],,adj.,国内的，公民的
+439,compose,[kəm'pəʊz],,v.,组成，编排，作曲，创作
+440,splendid,['splendɪd],,adj.,极好的
+441,strike,[straɪk],,v.； n.,打； 罢工
+442,threaten,['θretn],,v.,威胁
+443,tragedy,['trædʒədi],,n.,悲剧
+444,transform,[træns'fɔːm],,v.,转换
+445,trial,['traɪəl],,v.,试验；审讯
+446,fantasy,['fæntəsi],,n.,幻想
+447,fetch,[fetʃ],,v.,取来
+448,frequently,['fri:kwəntli],,adv.,频繁地
+449,glance,[glɑ:ns],,v.； n.,扫视(at)； 一瞥
+450,assume,[ə'sju:m],,v.,假定，设想
+451,uncertain,[ʌn'sə:tn],,adj.,不确定的
+452,urban,['ə:bən],,adj.,城市的
+453,harbour,['hɑ:bə],,n.,港口
+454,harmony,['hɑ:məni],,n.,和谐
+455,identify,[ai'dentifai],,v.,识别，鉴定
+456,impact,['impækt],,n.,影响
+457,distinct,[di'stiŋkt],,adj.,不同的
+458,scratch,[skrætʃ],,v.,抓
+459,burst,[bə:st],,v.,爆发(into/out)，闯入
+460,cancel,['kænsl],,v.,取消
+461,skip,[skip],,v.,跳过
+462,pedestrian,[pi'destriən],,n.,路人
+463,peer,[piə],,n.； v.,同辈； 凝视
+464,casual,['kæʒjuəl],,adj.,不经心的，偶然的
+465,erupt,[i'rʌpt],,v.,喷发
+466,principle,['prinsəpl],,n.,原则
+467,loose,[lu:s],,adj.,宽松的，松散的
+468,correspond,[.kɔris'pɔnd],,v.,对应(to)
+469,advocate,['ædvəkeit],,v.,提倡
+470,ashamed,[ə'ʃeimd],,adj.,感到惭愧的(of)
+471,automatic,[.ɔ:tə'mætik],,adj.,自动的
+472,decorate,['dekəreit],,v.,装饰
+473,rough,[rʌf],,adj.,粗糙的，艰难的
+474,honorable,['ɔnərəbl],,adj.,光荣的
+475,illegal,[i'li:gəl],,adj.,非法的
+476,negotiate,[ni'gəuʃieit],,v.,协商(with)
+477,vivid,['vivid],,adj.,生动的
+478,scan,[skæn],,v.,扫描，浏览
+479,sculpture,['skʌlptʃə],,n.,雕塑
+480,selfish,['selfiʃ],,adj.,自私的
+481,burden,['bə:dn],,n.； v.,负担； 使...负重
+482,absolute,['æbsəlu:t],,adj.,绝对的，完全的
+483,accomplish,[ə'kɔmpliʃ],,v.,实现，完成
+484,accuse,[ə'kju:z],,v.,控告(of)，指责
+485,administration,[əd.mini'streiʃən],,n.,管理，行政
+486,perception,[pə'sepʃən],,n.,观念，洞察力
+487,radiation,[.reidi'eiʃən],,n.,辐射
+488,reject,[ri'dʒekt],,v.,拒绝，排斥
+489,mild,[maild],,adj.,轻微的，温和的
+490,symptom,['sɪmptəm],,n.,征兆，症状
+491,treasure,['treʒə(r)],,n.,财富
+492,tuition,[tju'ɪʃn],,n.,学费
+493,foster,['fɔstə],,v.； adj.,培养； 收养的
+494,freezing,['fri:ziŋ],,adj.,冰冻的
+495,annual,['ænjuəl],,adj.,每年的
+496,antique,[æn'ti:k],,adj.； n.,古老的； 古董
+497,arise,[ə'raiz],,v.,出现
+498,unemployment,['ʌnim'plɔimənt],,n.,失业
+499,gravity,['græviti],,n.,重力
+500,rural,['ru:rəl],,adj.,农村的
+501,scare,[skɛə],,v.,受惊吓
+502,murder,['mə:də],,n.； v.,谋杀； 谋杀
+503,horizon,[hə'raizn],,n.,地平线
+504,noble,['nəubl],,adj.,高贵的，贵族的
+505,desperate,['despərit],,adj.,绝望的
+506,weaken,['wi:kən],,v.,削弱
+507,seize,[si:z],,v.,抓住
+508,acknowledge,[ək'nɔlidʒ],,v.,承认
+509,payment,['peimənt],,n.,支付，报酬
+510,priority,[prai'ɔriti],,n.,优先
+511,procedure,[prə'si:dʒə],,n.,程序
+512,quote,[kwəut],,n.； v.,引用； 引述
+513,luxury,['lʌkʃəri],,n.,豪华，奢侈
+514,contemporary,[kən'tempərəri],,adj.,当代的
+515,cooperate,[kəu'ɔpəreit],,v.,合作(with)
+516,classify,['klæsɪfaɪ],,v.,分类
+517,tight,[taɪt],,adj.,紧的
+518,tropical,['trɒpɪkl],,adj.,热带的
+519,fierce,[fiəs],,adj.,强烈的，凶猛的
+520,flexible,['fleksəbl],,adj.,灵活的
+521,fortunate,['fɔ:tʃənit],,adj.,幸运的
+522,giant,['dʒaiənt],,adj.,巨大的
+523,aggressive,[ə'gresiv],,adj.,好斗的，上进的
+524,anniversary,[.æni'və:səri],,n.,周年纪念
+525,undoubtedly,[ʌn'dautidli],,adv.,无疑地
+526,deed,[di:d],,n.,行为
+527,barely,['bɛəli],,adv.,几乎不
+528,rival,['raivəl],,n.； v.,对手； 竞争
+529,salary,['sæləri],,n.,薪水
+530,hurricane,['hʌrikən],,n.,飓风
+531,demonstrate,['demənstreit],,v.,证明，演示
+532,beneath,[bi'ni:θ],,prep.,在…之下
+533,brilliant,['briljənt],,adj.,卓越的，杰出的
+534,shortcoming,[ʃɔ:tˌkʌmiŋ],,n.,缺点
+535,optional,['ɔpʃənl],,adj.,任选的
+536,paradise,['pærədais],,n.,天堂
+537,emphasis,['emfəsis],,n.,强调(on)，重点
+538,calculate,['kælkjuleit],,v.,计算
+539,permanent,['pə:mənənt],,adj.,永久的
+540,capture,['kæptʃə],,v.,捕获，占领
+541,justice,['dʒʌstis],,n.,正义
+542,keen,[ki:n],,adj.,热衷的(on)；敏锐的
+543,pure,[pjʊər],,adj.,纯的，纯粹的
+544,pursue,[pə'sju:],,v.,追求
+545,reform,[ri'fɔ:rm],,v.； n.,改革； 改革
+546,legend,['ledʒənd],,n.,传奇
+547,clarify,['klærəfaɪ],,v.,阐明
+548,subordinate,[sə'bɔːdɪnət],,adj.,下级的，次要的
+549,swallow,['swɒləʊ],,v.,吞下
+550,transfer,[træns'fɜː(r)],,v.,转移
+551,trigger,['trɪɡə(r)],,v.,触发
+552,fasten,['fæsn],,v.,使固定，系(to)
+553,fulfill,[ful'fil],,v.,完成
+554,arrest,[ə'rest],,v.,逮捕
+555,unbelievable,[.ʌnbi'li:vəbl],,adj.,难以置信的
+556,unconscious,[ʌn'kɔnʃəs],,adj.,无知觉(意识)的
+557,unforgettable,['ʌnfə'getəbl],,adj.,难忘的
+558,valid,['vælid],,adj.,有效的
+559,deadline,['dedlain],,n.,截止时间
+560,restore,[ri'stɔ:],,v.,修复，恢复
+561,reveal,[ri'vi:l],,v.,显示，表明
+562,immigrant,['imigrənt],,n.,移民
+563,opponent,[ə'pəunənt],,n.,对手
+564,shrink,[ʃriŋk],,v.,缩水，收缩
+565,skeptical,['skeptikəl],,adj.,怀疑的
+566,abstract,[æb'strækt],,adj.,抽象的，理论的
+567,abuse,[ə'bju:z],,n./v.,"滥用, 虐待"
+568,accumulate,[ə'kju:mjuleit],,v.,积累
+569,accustom,[ə'kʌstəm],,v.,使习惯(to)
+570,pesticide,['pestisaid],,n.,杀虫剂
+571,capability,[.keipə'biliti],,n.,能力
+572,cater,['keitə],,v.,迎合（for)
+573,fancy,['fænsi],,v.,想象，喜欢
+574,polish,['pɔliʃ],,v.,磨光，擦亮，完善，改进
+575,portable,['pɔ:təbl],,adj.,手提式的
+576,protest,['prəutest],,v.,抗议(against)
+577,stimulus,['stɪmjələs],,n.,刺激
+578,summarize,['sʌməraɪz],,v.,概述
+579,superior,[suː'pɪəriə(r)],,adj.,上层的，较高的(to)
+580,surgery,['sɜːdʒəri],,n.,外科手术
+581,thoroughly,['θʌrəli],,adv.,彻底地
+582,trail,[treɪl],,n.,小径
+583,tremble,['trembl],,v.,发抖
+584,format,['fɔ:mæt],,n.； v.,板式； 设计
+585,fundamental,[.fʌndə'mentl],,adj.； n.,基本的； 基础
+586,anonymous,[ə'nɔniməs],,adj.,匿名的
+587,appetite,['æpitait],,n.,食欲(for)，嗜好
+588,arouse,[ə'rauz],,v.,引起
+589,awful,['ɔ:ful],,adj.,糟糕的
+590,vain,[vein],,adj.,徒劳的(in~ 徒劳无功)
+591,restless,['restlis],,adj.,不安的
+592,reverse,[ri'və:s],,v.； adj.,逆转； 相反的
+593,moderate,['mɔdəreit],,adj.,适度的
+594,offence,[ə'fens],,n.,冒犯，犯罪
+595,delicate,['delikit],,adj.,脆弱的，精细的
+596,wag,[wæg],,v.； n.,(狗)摇摆(尾巴)； 摇摆
+597,breakthrough,"['breik,θru:]",,n.,突破
+598,reluctant,[ri'lʌktənt],,adj.,不情愿的，勉强的
+599,accent,['æksənt],,n.,口音，重音
+600,adequate,['ædikwit],,adj.,足够的
+601,pavement,['peivmənt],,n.,人行道
+602,prejudice,['predʒudis],,n.,偏见
+603,prosperity,[prɔs'periti],,n.,繁荣，兴旺
+604,resemble,[ri'zembl],,v.,与…相似
+605,resolution,[.rezə'lu:ʃən],,n.,解决，决心
+606,mature,[mə'tjuə],,adj.,成熟的
+607,latter,['lætə],,adj.,后者的
+608,lean,[li:n],,v.,倚，倾斜
+609,compound,['kɒmpaʊnd],,n.,化合物
+610,tolerate,['tɒləreɪt],,v.,容忍，忍受
+611,transmission,[træns'mɪʃn],,n.,传输
+612,approximately,[ə'prɔksimitli],,adv.,大约地，近似地
+613,artificial,[.ɑ:ti'fiʃəl],,adj.,人造的
+614,athletic,[æθ'letik],,adj.,运动的，健壮的
+615,awkward,['ɔ:kwəd],,adj.,尴尬的
+616,damp,[dæmp],,adj.,潮湿的
+617,dash,[dæʃ],,v.； n.,猛冲； 猛冲
+618,restrict,[ri'strikt],,v.,限制
+619,sacrifice,['sækrifais],,v.； n.,牺牲(for)； 祭品
+620,minimize,['minimaiz],,v.,使减(缩)小到最低
+621,miracle,['mirəkl],,n.,奇迹
+622,multiple,['mʌltipl],,adj.,多种多样的
+623,neglect,[ni'glekt],,v.,忽视，忽略
+624,notorious,[nəu'tɔ:riəs],,adj.,臭名昭著的
+625,degrade,[di'greid],,v.,降解，退化
+626,depart,[di'pɑ:t],,v.,离开，死亡
+627,accelerate,[æk'seləreit],,v.,加速
+628,adore,[ə'dɔ:],,v.,爱慕，崇拜
+629,perspective,[pə'spektiv],,n.,看法
+630,category,['kætigəri],,n.,种类
+631,exclude,[iks'klu:d],,v.,排除
+632,pregnant,['pregnənt],,adj.,怀孕的
+633,random,['rændəm],,adj.,随机的 (at~ 随机地)
+634,rebel,"['rebl,ri'bel]",,v.； n.,造反； 造反者
+635,leak,[li:k],,v.,渗出，泄露
+636,starve,[stɑːv],,v.,挨饿
+637,sting,[stɪŋ],,v.,叮
+638,sustainable,[sə'steɪnəbl],,adj.,可持续的
+639,temptation,[temp'teɪʃn],,n.,诱惑
+640,tiresome,['taɪəsəm],,adj.,令人厌倦的
+641,tourism,['tʊərɪzəm],,n.,旅游业
+642,transition,[træn'zɪʃn],,n.,过渡，转变
+643,allocate,['æləkeit],,v.,分配
+644,angle,['æŋgl],,n.,角度
+645,aptitude,['æptitju:d],,n.,潜能
+646,assertive,[ə'sə:tiv],,adj.,坚定的
+647,attribute,['ætribju:t],,v.； n.,把...归于(to)； 品质
+648,decisive,[di'saisiv],,adj.,决定性的
+649,retain,[ri'tein],,v.,保持，保留
+650,retreat,[ri'tri:t],,n.； v.,减少，撤退； 撤退
+651,miserable,['mizərəbl],,adj.,悲惨的
+652,illusion,[i'lu:ʒən],,n.,错觉
+653,numerous,['nju:mərəs],,adj.,许多的
+654,defect,[di'fekt],,n.,缺陷
+655,deliberately,[di'libəritli],,adv.,故意地
+656,democratic,[ˌdemə'krætik],,adj.,民主的
+657,demolition,[ˌdemə'liʃən],,n.,破坏，毁坏
+658,boundary,['baundəri],,n.,边界，分界线
+659,slim,[slim],,adj.； v.,苗条的； 变苗条
+660,abnormal,[æb'nɔ:məl],,adj.,不正常的
+661,abundant,[ə'bʌndənt],,adj.,丰富的
+662,persist,[pə'sist],,v.,坚持(in)
+663,cherish,['tʃeriʃ],,v.,珍爱
+664,lately,['leitli],,adv.,最近
+665,exclaim,[iks'kleim],,v.,呼喊
+666,lighten,['laitn],,v.,照亮
+667,conscience,['kɔnʃəns],,n.,良心
+668,time-consuming,['taimkən.sju:miŋ],,adj.,耗费时间的
+669,ambiguous,[æm'bigjuəs],,adj.,模棱两可的
+670,applause,[ə'plɔ:z],,n.,鼓掌
+671,assemble,[ə'sembl],,v.,聚集
+672,attain,[ə'tein],,v.,获得
+673,vacant,['veikənt],,adj.,空的
+674,deceive,[di'si:v],,v.,欺骗
+675,bankrupt,['bæŋkrʌpt],,adj.,破产的
+676,restrain,[ri'strein],,v.,抑制
+677,resume,[ri'zju:m],,n.； v.,简历； 继续
+678,revenge,[ri'vendʒ],,v.； n.,报复； 报复
+679,revive,[ri'vaiv],,v.,复苏
+680,modify,['mɔdifai],,v.,修饰，更改
+681,obesity,[əu'bi:siti],,n.,肥胖
+682,delete,[di'li:t],,v.,删除
+683,volatile,['vɔlətail],,adj.,不稳定的，易变的
+684,bound,[baund],,adj.,必定的(to)
+685,worthwhile,['wə:θ'wail],,adj.,值得(做)的
+686,overwhelm,"[,əuvə'welm]",,v.,打击，压倒
+687,simulate,['simjuleit],,v.,假装，模仿
+688,simultaneously,[saiməl'teiniəsli],,adv.,同时地

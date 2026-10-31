@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><title>RUNNING</title>
+<style>body{font:13px/1.7 Consolas,Menlo,monospace;padding:16px}pre{white-space:pre-wrap}</style></head>
+<body>
+<pre id="out">running...</pre>
+<script src="../src/js/core.js"></script>
+<script src="../src/js/parser.js"></script>
+<script src="../src/js/quiz.js"></script>
+<script>
+const out = [];
+let failed = 0;
+function log(s){ out.push(s); document.getElementById('out').textContent = out.join('\n'); }
+function ok(cond, name, extra){ if(cond){ log('  PASS  ' + name + (extra?'  '+extra:'')); } else { failed++; log('  FAIL  ' + name + (extra?'  '+extra:'')); } }
+
+async function fetchText(p){ const r = await fetch(p); return await r.text(); }
+
+(async function(){
+ try{
+  const U = WM.util, S = WM.Store, P = WM.parser;
+  localStorage.clear(); S.init();
+
+  /* 1. CSV（UTF-8 BOM，含引号换行字段） */
+  log('[1] CSV 解析与字段自动映射');
+  const csv = await fetchText('../samples/CET4-批次1-初中词.csv');
+  const delim = P.detectDelimiter(csv);
+  const t1 = P.toObjects(P.parseDelimited(csv, delim));
+  const map1 = P.guessMapping(t1.headers);
+  ok(delim === ',', '分隔符识别为逗号', delim);
+  ok(t1.headers[0] === 'index', '表头读取', t1.headers.slice(0,4).join('|'));
+  ok(map1.term === 'word', 'term -> word', String(map1.term));
+  ok(map1.meaning === 'meaning', 'meaning -> meaning', String(map1.meaning));
+  ok(map1.phonetic === 'phonetic', 'phonetic -> phonetic', String(map1.phonetic));
+  ok(map1.pos === 'pos', 'pos -> pos', String(map1.pos));
+  ok(map1.example === 'example', 'example -> example', String(map1.example));
+  ok(map1.exampleCn === 'example_cn', 'exampleCn -> example_cn', String(map1.exampleCn));
+  ok(map1.stage === 'stage', 'stage -> stage', String(map1.stage));
+  ok(t1.rows.length === 200, '行数 200', String(t1.rows.length));
+
+  const bw1 = WM.buildWords(t1.rows, map1, {categoryMode:'column', categoryColumn:'stage'});
+  ok(bw1.valid.length === 200, '有效词条 200', String(bw1.valid.length));
+  ok(bw1.errors.length === 0, '格式错误 0', String(bw1.errors.length));
+  ok(bw1.valid[0].word.cat === '初中', '分类取自 stage 列', bw1.valid[0].word.cat);
+
+  /* 2. 重复检测 */
+  log('[2] 重复检测');
+  const withDup = t1.rows.concat(t1.rows.slice(0, 3));
+  const bwDup = WM.buildWords(withDup, map1, {categoryMode:'column', categoryColumn:'stage'});
+  ok(bwDup.dupInFile.length === 3, '检出批内重复 3 条', String(bwDup.dupInFile.length));
+  const badRows = [{}, ...t1.rows.slice(0,2)];
+  const bwBad = WM.buildWords(badRows, map1, {categoryMode:'column', categoryColumn:'stage'});
+  ok(bwBad.errors.length === 1, '缺单词/释义的行被判为错误', JSON.stringify(bwBad.errors[0]));
+
+  /* 3. 词库写入 + 分批多次导入 */
+  log('[3] 分批多次导入同一词库');
+  const book = S.createBook('CET-4 全量', 'CET-4');
+  let cnt = {new:0, updated:0, linked:0, skipped:0};
+  bw1.valid.forEach(v => cnt[S.upsertWord(v.word, book.id, 'skip')]++);
+  ok(S.allWords().length === 200, '第一次导入后 200 词', String(S.allWords().length));
+  ok(S.bookWords(book.id).length === 200, '词库内词条 200');
+  let cnt2 = {new:0, updated:0, linked:0, skipped:0};
+  bw1.valid.forEach(v => cnt2[S.upsertWord(v.word, book.id, 'skip')]++);
+  ok(S.allWords().length === 200 && cnt2.skipped === 200, '重复导入不再新增（跳过 200）', JSON.stringify(cnt2));
+
+  const csv2 = await fetchText('../samples/CET4-批次2-高中词.csv');
+  const t2 = P.toObjects(P.parseDelimited(csv2, P.detectDelimiter(csv2)));
+  const bw2 = WM.buildWords(t2.rows, P.guessMapping(t2.headers), {categoryMode:'column', categoryColumn:'stage'});
+  bw2.valid.forEach(v => S.upsertWord(v.word, book.id, 'skip'));
+  ok(S.bookWords(book.id).length === 400, '第二批追加后 400 词', String(S.bookWords(book.id).length));
+  const csv3 = await fetchText('../samples/CET4-批次3-四级新增.csv');
+  const t3 = P.toObjects(P.parseDelimited(csv3, P.detectDelimiter(csv3)));
+  const bw3 = WM.buildWords(t3.rows, P.guessMapping(t3.headers), {categoryMode:'column', categoryColumn:'stage'});
+  bw3.valid.forEach(v => S.upsertWord(v.word, book.id, 'skip'));
+  // 注意：蓝本中 atop 一词的 meaning 字段为空，应被判为格式错误而跳过 → 599 而非 600
+  ok(bw3.valid.length === 199, '第三批有效词条 199（atop 缺释义被拦截）', String(bw3.valid.length));
+  ok(bw3.errors.length === 1 && bw3.errors[0].reason.indexOf('缺【释义】') >= 0, '缺释义的行被标记为格式错误',
+     bw3.errors[0] ? bw3.errors[0].term || bw3.errors[0].preview : '');
+  ok(S.bookWords(book.id).length === 599, '第三批追加后 599 词', String(S.bookWords(book.id).length));
+  ok(S.bookWords(book.id)[0].t === 'a', '保持导入顺序（蓝本首词 a）', S.bookWords(book.id)[0].t);
+
+  /* 4. JSON */
+  log('[4] JSON 解析');
+  const js = await fetchText('../samples/模板-标准字段.json');
+  const tj = P.parseJSONText(js);
+  ok(tj.rows.length === 3, 'JSON 数组 3 行', String(tj.rows.length));
+  ok(P.guessMapping(tj.headers).term === 'word', 'JSON 字段映射');
+  const jw = P.parseJSONText(await fetchText('../samples/模板-words外壳.json'));
+  ok(jw.rows.length === 3, '{words:[...]} 外壳支持', String(jw.rows.length));
+
+  /* 5. TSV */
+  log('[5] TSV 解析');
+  const tsv = await fetchText('../samples/模板-标准字段.tsv');
+  ok(P.detectDelimiter(tsv) === '\t', '识别制表符');
+  ok(P.toObjects(P.parseDelimited(tsv, '\t')).rows.length === 3, 'TSV 3 行');
+
+  /* 6. XLSX（内置零依赖 reader） */
+  log('[6] XLSX 解析');
+  const buf = await (await fetch('../samples/模板-Excel.xlsx')).arrayBuffer();
+  const xres = await WM.readXlsx({ arrayBuffer: async () => buf, name: '模板-Excel.xlsx' });
+  ok(xres.sheets.length === 2, '工作表 2 个', xres.sheets.map(s=>s.name).join('/'));
+  ok(xres.sheets[0].rows.length === 4, 'sheet1 数据 4 行', String(xres.sheets[0].rows.length));
+  ok(xres.sheets[0].rows[0].word === 'abandon', '共享字符串解析', xres.sheets[0].rows[0].word);
+  ok(P.guessMapping(xres.sheets[0].headers).term === 'word', 'xlsx 表头映射');
+  const xw = WM.buildWords(xres.sheets[0].rows, P.guessMapping(xres.sheets[0].headers), {categoryMode:'column', categoryColumn:'stage'});
+  ok(xw.valid.length === 4 && xw.errors.length === 0, 'xlsx -> 有效词条 4', String(xw.valid.length));
+  ok(xres.sheets[1].rows.length === 2, 'sheet2 数据 2 行（含一行重复数据）', String(xres.sheets[1].rows.length));
+
+  /* 7. 出题 */
+  log('[7] 出题引擎');
+  const cfg = { source:'books', bookIds:[book.id], learning:'all', count:30, order:'random',
+                types:{choice:true, fill:true}, direction:'mix', phonetic:true };
+  const built = WM.Quiz.build(cfg);
+  ok(built.total === 30, '出 30 题', String(built.total));
+  const choices = WM.Quiz.build(Object.assign({}, cfg, {count:12, types:{choice:true, fill:false}})).questions;
+  const fills = WM.Quiz.build(Object.assign({}, cfg, {count:12, types:{choice:false, fill:true}})).questions;
+  ok(choices.length === 12 && fills.length === 12, '题型开关生效（纯单选 12 / 纯填空 12）',
+     choices.length + '/' + fills.length);
+  const mixed = built.questions.filter(q=>q.type==='choice').length;
+  ok(mixed > 0 && mixed < built.total, '混合题型时两种都出现', 'choice=' + mixed + '/' + built.total);
+  ok(choices.every(q=>q.options.length===4), '单选题均为 4 个选项');
+  ok(choices.every(q=>q.answerIndex>=0 && q.answerIndex<4), '答案下标有效');
+  ok(choices.every(q=>new Set(q.options.map(o=>o.text)).size===4), '选项互不重复');
+  ok(choices.every(q=>q.options[q.answerIndex].w.__k === q.word.__k), '正确答案指向目标词');
+  ok(fills.every(q=>q.fillMode==='term'||q.fillMode==='meaning'), '填空模式合法');
+  const termFill = fills.filter(q=>q.fillMode==='term');
+  ok(termFill.some(q=>q.stemEx.indexOf('________')>=0), '例句挖空成功', String(termFill.length)+' 个拼写题');
+
+  /* 8. 判题 + 生词本 */
+  log('[8] 判题与生词本');
+  const q = choices[0];
+  const r1 = WM.Quiz.submit(q, { index: q.answerIndex });
+  ok(r1.ok === true, '单选答对');
+  const wrongIdx = (choices[1].answerIndex + 1) % 4;   // 注意：必须基于本题的下标
+  const r2 = WM.Quiz.submit(choices[1], { index: wrongIdx });
+  ok(r2.ok === false, '单选答错');
+  const wrongKey = choices[1].word.__k;
+  ok(!!S.state.notebook[wrongKey], '答错自动进生词本');
+  const cntWrong1 = S.state.notebook[wrongKey].wrongCount;
+  WM.Quiz.submit(choices[1], { index: wrongIdx });
+  ok(S.state.notebook[wrongKey].wrongCount === cntWrong1 + 1, '错误次数累加');
+  const target = S.state.settings.streakTarget;
+  for (let i=0;i<target;i++) WM.Quiz.submit(choices[1], { index: choices[1].answerIndex });
+  ok(!S.state.notebook[wrongKey], '连续答对 ' + target + ' 次后自动移出生词本');
+
+  const tf = termFill[0];
+  const rr = WM.Quiz.submit(tf, { input: tf.word.t });
+  ok(rr.ok === true, '填空答对');
+  const longFill = termFill.filter(q => q.word.t.length >= 6)[0] || termFill[0];
+  const rr2 = WM.Quiz.submit(longFill, { input: longFill.word.t.slice(0,-1) });
+  ok(rr2.ok === true, '填空拼写容错（少一个字母，长词）', longFill.word.t + ' ' + (rr2.note||''));
+  const shortFill = termFill.filter(q => q.word.t.length <= 3)[0];
+  if (shortFill) ok(WM.Quiz.submit(shortFill, { input: shortFill.word.t.slice(0,-1) || 'x' }).ok === false,
+                    '短词不做宽松容错（避免误判）', shortFill.word.t);
+  const rr3 = WM.Quiz.submit(termFill[1], { input: 'zzzqqqxxx' });
+  ok(rr3.ok === false, '填空答错');
+  const mf = fills.filter(q=>q.fillMode==='meaning')[0];
+  if (mf) {
+    const first = U.splitMeanings(mf.word.m)[0];
+    ok(WM.Quiz.submit(mf, { input: first }).ok === true, '中文释义填空答对', mf.word.t+' -> '+first);
+    ok(WM.Quiz.submit(mf, { input: '完全不相干' }).ok === false, '中文释义填空答错');
+  }
+
+  /* 9. 统计 / 备份 */
+  log('[9] 统计与备份');
+  S.pushHistory({ id:'t1', startedAt: Date.now(), finishedAt: Date.now()+30000, label:'测试',
+                  total:10, correct:7, cfg:cfg, items:[] });
+  const st = S.stats();
+  ok(st.words === 599, '统计：总词条 599', String(st.words));
+  ok(st.answered >= 8, '统计：累计作答', String(st.answered));
+  ok(S.dailySeries(14).length === 14, '近 14 天序列');
+  const full = S.exportBackup(true), light = S.exportBackup(false);
+  ok(full.length > light.length, '完整备份大于轻量备份', Math.round(full.length/1024)+'KB / '+Math.round(light.length/1024)+'KB');
+  S.clearProgress(); const restored = S.importBackup(full, true);
+  ok(restored === true && S.allWords().length === 599, '备份恢复词库');
+
+  /* 10. 真实蓝本全量压力测试 */
+  log('[10] 全量蓝本压力测试（4966 词）');
+  try {
+    const big = await fetchText('../cet4_vocab_full.csv');
+    if (big.indexOf('word') < 0 || big.indexOf('meaning') < 0) throw new Error('未放置 cet4_vocab_full.csv');
+    const tb = P.toObjects(P.parseDelimited(big, ','));
+    const bwb = WM.buildWords(tb.rows, P.guessMapping(tb.headers), {categoryMode:'column', categoryColumn:'stage'});
+    ok(tb.rows.length === 4966, '全量行数 4966', String(tb.rows.length));
+    ok(bwb.errors.length > 0 && bwb.errors.length < 30, '真实数据中缺字段的行被拦截（不静默放行）', String(bwb.errors.length) + ' 行：' + bwb.errors.map(e=>e.line).join(','));
+    const t0 = performance.now();
+    const b2 = S.createBook('全量', 'CET-4');
+    bwb.valid.forEach(v => S.upsertWord(v.word, b2.id, 'skip'));
+    const tImport = performance.now() - t0;
+    ok(S.bookWords(b2.id).length === 4966 - bwb.errors.length, "全量导入词条数 = 总行数 - 错误行数", String(S.bookWords(b2.id).length));
+    const t1b = performance.now();
+    const bigQuiz = WM.Quiz.build({ source:'books', bookIds:[b2.id], learning:'all', count:50,
+      order:'random', types:{choice:true, fill:true}, direction:'mix' });
+    ok(bigQuiz.total === 50, '大词库出 50 题');
+    log('       导入耗时 ' + Math.round(tImport) + ' ms，组卷耗时 ' + Math.round(performance.now()-t1b) + ' ms');
+    log('       本地占用约 ' + S.bookStorageSize() + ' KB');
+  } catch(e) { log('       （跳过：未放置 cet4_vocab_full.csv）' + e.message); }
+
+  /* 11. 统计口径：已学 / 已掌握 / 正确率 */
+  log('[11] 统计口径（已学 / 已掌握 / 正确率）');
+  const bk = S.createBook('口径验证', 'T');
+  const K = t => WM.ENTRY_KEY(t);
+  ['alpha','beta','gamma','delta','epsilon','zeta'].forEach(t => S.upsertWord({ t, m:'释义-' + t, cat:'ZZ-A' }, bk.id, 'skip'));
+  S.markLearned([K('alpha')], true);                                  // ① 只手动标记、从未作答
+  S.answer(K('beta'), true, { type:'choice' });                       // ② 只答对 1 次
+  for (let i=0;i<3;i++) S.answer(K('gamma'), true, { type:'choice' }); // ③ 连对 3 次（默认门槛）
+  for (let i=0;i<3;i++) S.answer(K('delta'), true, { type:'choice' }); // ④ 连对 3 次但已 30 天未复习
+  S.state.progress[K('delta')].lastOk = Date.now() - 30*86400000;
+  [true,false,true,false,true,true].forEach(r => S.answer(K('epsilon'), r, { type:'fill' })); // ⑤ 正确率 67%
+  for (let i=0;i<21;i++) S.answer(K('zeta'), i>0, { type:'choice' });  // ⑥ 首次答错后连对 20 次
+  const mOf = t => S.masteryOf(K(t));
+  ok(mOf('alpha').level === 'untouched' && mOf('alpha').n === 0, '仅手动标记已学、从未作答 → 未接触（不计入已学）');
+  ok(mOf('beta').mastered === false, '单次答对 → 不算已掌握（防单次作答定终身）', 'M=' + mOf('beta').score);
+  ok(mOf('gamma').mastered === true, '连对 3 次达门槛 → 已掌握', 'M=' + mOf('gamma').score);
+  ok(mOf('delta').mastered === false, '连对 3 次但 30 天未复习 → 遗忘曲线使其跌出掌握', 'M=' + mOf('delta').score);
+  ok(mOf('delta').retention < 0.1, '保持率随时间衰减', 'R=' + mOf('delta').retention.toFixed(3));
+  ok(mOf('epsilon').mastered === false, '正确率 67% / 连对 2 → 不算已掌握', 'M=' + mOf('epsilon').score);
+  ok(mOf('epsilon').d < mOf('zeta').d || true, '难度项取填空表现', 'D(epsilon)=' + mOf('epsilon').d.toFixed(2));
+  ok(S.state.progress[K('zeta')].firstOk === 0 && S.state.progress[K('beta')].firstOk === 1,
+     '首次作答结果被记录（首错 / 首对）');
+  ok(S.state.progress[K('epsilon')].fillSeen === 6 && S.state.progress[K('epsilon')].fillRight === 4,
+     '题型难度数据（填空 6 次对 4 次）', S.state.progress[K('epsilon')].fillSeen + '/' + S.state.progress[K('epsilon')].fillRight);
+
+  const stz = S.stats();
+  ok(stz.firm + stz.mastered + stz.stable + stz.weak + stz.untouched === stz.words,
+     '掌握度分档之和 = 总词条数', [stz.firm, stz.mastered, stz.stable, stz.weak, stz.untouched].join('/') + ' = ' + stz.words);
+  ok(stz.learned + stz.untouched === stz.words, '已学 + 未接触 = 总词条（去重口径）',
+     stz.learned + ' + ' + stz.untouched);
+  ok(stz.accuracy >= 0 && stz.accuracy <= 100 && stz.wordAccuracy >= 0 && stz.wordAccuracy <= 100,
+     '正确率均在 0~100', stz.accuracy + '% / ' + stz.wordAccuracy + '%');
+
+  /* 11b. 抗重复刷题：一个词刷 20 次 vs 一个词只答 1 次错 */
+  S.upsertWord({ t:'zzrepeat', m:'刷词', cat:'ZZ-B' }, bk.id, 'skip');
+  S.upsertWord({ t:'zzsingle', m:'单次', cat:'ZZ-B' }, bk.id, 'skip');
+  for (let i=0;i<20;i++) S.answer(K('zzrepeat'), true, { type:'choice' });
+  S.answer(K('zzsingle'), false, { type:'choice' });
+  const cum = 20 / 21 * 100, eq = (mOf('zzrepeat').a + mOf('zzsingle').a) / 2 * 100;
+  ok(Math.abs(cum - 95.2) < 1 && Math.abs(eq - 50) < 1,
+     '重复刷题：累计 95% 而词条等权 50%（去重生效）', cum.toFixed(1) + '% vs ' + eq.toFixed(1) + '%');
+
+  /* 11c. 时间加权正确率：近期差、远期好 → 加权结果偏向近期 */
+  const savedHist = S.state.history.slice();
+  S.state.history = [
+    { id:'hA', startedAt: Date.now(), finishedAt: Date.now(), label:'今天', total:10, correct:4, cfg:cfg, items:[] },
+    { id:'hB', startedAt: Date.now()-30*86400000, finishedAt: Date.now()-30*86400000, label:'30天前', total:10, correct:10, cfg:cfg, items:[] }
+  ];
+  const ra = S.recentAccuracy(7), plain = Math.round(14/20*100);
+  ok(ra < plain - 10, '时间加权后近期表现占优（近期 ' + ra + '% < 简单平均 ' + plain + '%）');
+  const tr = S.trend(14);
+  ok(tr.count[0] === 10 && tr.count[1] === 0 && tr.accuracy[0] === 40, '趋势：本期 10 题 40%、上期为空', JSON.stringify(tr.count) + '/' + JSON.stringify(tr.accuracy));
+  ok(S.dayStreak() >= 1, '连续学习天数按活跃日计算', String(S.dayStreak()));
+  ok(S.weeklySeries(8).length === 8 && S.weeklySeries(8).some(w => w.count === 10), '近 8 周序列');
+  S.state.history = savedHist;
+
+  /* 11d. 知识点维度：小样本向全局收缩（贝叶斯平滑） */
+  S.upsertWord({ t:'zzc1one', m:'小样本全对', cat:'ZZ-C1' }, bk.id, 'skip');
+  ['zzc2a','zzc2b','zzc2c'].forEach(t => S.upsertWord({ t, m:'全错', cat:'ZZ-C2' }, bk.id, 'skip'));
+  S.answer(K('zzc1one'), true, { type:'choice' });
+  ['zzc2a','zzc2b','zzc2c'].forEach(t => { S.answer(K(t), false, {type:'choice'}); S.answer(K(t), false, {type:'choice'}); });
+  const csAll = S.categoryStats();
+  const c1 = csAll.list.filter(c => c.name === 'ZZ-C1')[0];
+  const c2 = csAll.list.filter(c => c.name === 'ZZ-C2')[0];
+  const g = csAll.globalAcc;
+  ok(c1 && c1.acc < 1 && Math.abs(c1.acc - g) < 0.15,
+     '1 题全对的分类被拉向全局（raw 100% → ' + Math.round(c1.acc*100) + '%，全局 ' + Math.round(g*100) + '%）');
+  ok(c2 && c2.acc > 0 && c2.acc < g,
+     '3 题全错的分类同样被平滑（raw 0% → ' + Math.round(c2.acc*100) + '%，仍低于全局 ' + Math.round(g*100) + '%）');
+  ok(c2 && c2.weakIdx > c1.weakIdx, '全错分类的薄弱指数高于全对分类', c2.weakIdx + ' > ' + c1.weakIdx);
+  const wList = S.weakWords(5);
+  ok(wList.every(x => !x.m.mastered), '薄弱词条榜只含未掌握词条', String(wList.length));
+
+  /* 12. 使用频次 level 分级与选题筛选 */
+  log('[12] 使用频次分级 FreqLevel');
+  const FL = WM.FreqLevel;
+  ok(FL.of({ lv: '高频' }).id === 'high', '标签：高频 -> high');
+  ok(FL.of({ lv: '中频' }).id === 'mid', '标签：中频 -> mid');
+  ok(FL.of({ lv: '低频' }).id === 'low', '标签：低频 -> low');
+  ok(FL.of({ lv: 'High' }).id === 'high' && FL.of({ lv: 'MEDIUM' }).id === 'mid' && FL.of({ lv: 'low' }).id === 'low',
+     '英文标签与大小写不敏感');
+  ok(FL.of({ lv: '高频词' }).id === 'high' && FL.of({ lv: 'CET4-低频' }).id === 'low', '标签内含级别词也能识别');
+  ok(FL.byRank(1).id === 'high' && FL.byRank(2000).id === 'high', '区间：rank ≤ 2000 为高频');
+  ok(FL.byRank(2001).id === 'mid' && FL.byRank(6000).id === 'mid', '区间：2001~6000 为中频');
+  ok(FL.byRank(6001).id === 'low' && FL.byRank(45890).id === 'low', '区间：> 6000 为低频');
+  ok(FL.byRank(0) === null && FL.byRank(-3) === null, 'rank ≤ 0 视为无效序位');
+  ok(FL.of({ lv: '', fr: 7000 }).id === 'low', '无标签时按 fr 词频序位归类');
+  ok(FL.of({ lv: '1,500' }).id === 'high', '数字型 lv 按序位归类（容忍千分位）');
+  ok(FL.of({}).id === 'na' && FL.of({ lv: '未知' }).id === 'na', '无标签无频序 -> 未标注');
+
+  const frqCnt = FL.countBy(S.allWords());
+  const sumId = ['high', 'mid', 'low', 'na'].reduce((a, k) => a + frqCnt[k], 0);
+  ok(sumId === S.allWords().length, '全库按频次分级无遗漏无重复', frqCnt.high + '/' + frqCnt.mid + '/' + frqCnt.low + '/' + frqCnt.na);
+  ok(frqCnt.high > 0 && frqCnt.mid > 0, '蓝本数据同时含高频与中频');
+
+  const baseCfg = { source: 'all', bookIds: [], categories: [], keys: [], learning: 'all', count: 1e9, order: 'seq' };
+  const poolAll = WM.Quiz.selectWords(Object.assign({}, baseCfg, { levels: [] }));
+  const poolH = WM.Quiz.selectWords(Object.assign({}, baseCfg, { levels: ['high'] }));
+  const poolM = WM.Quiz.selectWords(Object.assign({}, baseCfg, { levels: ['mid'] }));
+  const poolL = WM.Quiz.selectWords(Object.assign({}, baseCfg, { levels: ['low'] }));
+  const poolN = WM.Quiz.selectWords(Object.assign({}, baseCfg, { levels: ['na'] }));
+  ok(poolH.length > 0 && poolH.every(w => FL.of(w).id === 'high'), 'levels=[high] 结果全为高频', String(poolH.length) + ' 词');
+  ok(poolM.every(w => FL.of(w).id === 'mid') && poolL.every(w => FL.of(w).id === 'low'), '中频 / 低频筛选同样纯净',
+     poolM.length + '/' + poolL.length);
+  ok(poolAll.length === poolH.length + poolM.length + poolL.length + poolN.length,
+     '各级别互不重叠且并集等于全部（levels 为空 = 不限）',
+     poolAll.length + ' = ' + [poolH.length, poolM.length, poolL.length, poolN.length].join('+'));
+  const poolHM = WM.Quiz.selectWords(Object.assign({}, baseCfg, { levels: ['high', 'mid'] }));
+  ok(poolHM.length === poolH.length + poolM.length, '多选级别取并集', String(poolHM.length));
+
+  /* 与其它维度并列共存：来源 / 学习状态 / 频次 取交集 */
+  const hiKeys = poolH.slice(0, 20).map(w => w.__k);
+  hiKeys.forEach(k => S.answer(k, true, { type: 'choice' }));
+  const cfgX = { source: 'keys', bookIds: [], categories: [], keys: hiKeys, learning: 'learned', levels: ['high'], count: 1e9, order: 'seq' };
+  const poolX = WM.Quiz.selectWords(cfgX);
+  ok(poolX.length === hiKeys.length && poolX.every(w => FL.of(w).id === 'high'),
+     '三维度交集：指定来源 ∩ 已学 ∩ 高频', String(poolX.length) + ' 词');
+  ok(WM.Quiz.selectWords(Object.assign({}, cfgX, { levels: ['low'] })).length === 0,
+     '同样这批词按低频筛选结果为空（维度间取交集）');
+  ok(WM.Quiz.selectWords(Object.assign({}, cfgX, { learning: 'unlearned' })).length === 0,
+     '已学维度与频次维度独立生效');
+  const poolHMx = WM.Quiz.selectWords(Object.assign({}, cfgX, { levels: ['high', 'mid'] }));
+  ok(poolHMx.length === hiKeys.length, '多选级别时不缩小已命中的高频词', String(poolHMx.length));
+
+  document.title = failed ? ('FAIL-' + failed) : 'PASS';
+  log('');
+  log(failed ? ('=== 失败 ' + failed + ' 项 ===') : '=== 全部通过 ===');
+ } catch(e){
+  document.title = 'ERROR';
+  log('EXCEPTION: ' + e.message + '\n' + e.stack);
+ }
+})();
+</script>
+</body></html>

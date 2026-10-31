@@ -1,0 +1,68 @@
+name: Deploy WordMaster PWA to GitHub Pages
+
+# 推送到 main 分支，或手动触发（Actions 页 Run workflow）时部署 site/ 目录
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - '.github/workflows/deploy-pages.yml'
+      - 'tools/build_pwa.py'
+      - 'tools/build.py'
+      - 'tools/make_icons.py'
+      - 'pwa/**'
+      - 'src/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只保留一次部署；进行中的部署不必取消（避免误伤已发布的版本）
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 仓库里已提交 site/ 时直接使用；若只想提交源码，此步骤会现场生成
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build PWA site (idempotent)
+        run: |
+          if [ ! -f site/index.html ]; then
+            pip install pillow
+            python tools/make_icons.py
+            python tools/build.py
+            python tools/build_pwa.py
+          else
+            echo "site/ 已存在于仓库中，直接发布（如需重建请删除 site/ 后提交）"
+          fi
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

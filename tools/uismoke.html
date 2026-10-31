@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><title>RUNNING</title>
+<style>body{font:13px/1.7 Consolas,Menlo,monospace;padding:12px}iframe{width:100%;height:560px;border:1px solid #ccc}pre{white-space:pre-wrap}</style></head>
+<body>
+<pre id="out">running...</pre>
+<iframe id="frame" src="about:blank"></iframe>
+<script src="../src/js/core.js"></script>
+<script src="../src/js/parser.js"></script>
+<script src="../src/js/quiz.js"></script>
+<script>
+const lines = []; let failed = 0;
+function log(s){ lines.push(s); document.getElementById('out').textContent = lines.join('\n'); }
+function ok(c, name, extra){ if(c) log('  PASS  ' + name + (extra?'  '+extra:'')); else { failed++; log('  FAIL  ' + name + (extra?'  '+extra:'')); } }
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const frame = document.getElementById('frame');
+
+/* 先把示例词库写进 localStorage，模拟用户已完成导入 */
+async function seed(){
+  const P = WM.parser, S = WM.Store;
+  S.init();
+  S.state = { version:1, books:[], words:{}, progress:{}, notebook:{}, history:[], settings:{
+    defaultCount:20, order:'random', types:{choice:true, fill:true}, direction:'mix',
+    streakTarget:3, dailyGoal:40, autoNotebook:true, showPhonetic:true, historyMax:80 } };
+  const book = S.createBook('CET-4 蓝本', 'CET-4');
+  for (const f of ['../samples/CET4-批次1-初中词.csv','../samples/CET4-批次2-高中词.csv','../samples/CET4-批次3-四级新增.csv']){
+    const text = await (await fetch(f)).text();
+    const t = P.toObjects(P.parseDelimited(text, P.detectDelimiter(text)));
+    const bw = WM.buildWords(t.rows, P.guessMapping(t.headers), {categoryMode:'column', categoryColumn:'stage'});
+    bw.valid.forEach(v => S.upsertWord(v.word, book.id, 'skip'));
+  }
+  S.reindex();
+  /* 造一点有时间跨度的学习记录，让统计页跑在真实数据上 */
+  const ws = S.bookWords(book.id);
+  ws.slice(0, 12).forEach(w => { for (let i=0;i<4;i++) S.answer(w.__k, true, {type: i%2 ? 'fill' : 'choice'}); });
+  ws.slice(12, 40).forEach(w => S.answer(w.__k, true, {type:'choice'}));
+  ws.slice(40, 60).forEach(w => { S.answer(w.__k, false, {type:'fill'}); S.answer(w.__k, true, {type:'choice'}); });
+  ws.slice(60, 90).forEach(w => S.answer(w.__k, false, {type:'choice'}));
+  for (let d = 1; d <= 20; d += 3){
+    const at = Date.now() - d * 86400000;
+    S.pushHistory({ id:'h'+d, startedAt:at, finishedAt:at+180000, label:'随机 · 全部词库',
+      total:20, correct: 10 + (d % 7), cfg:{}, items: ws.slice(0,20).map(w => ({key:w.__k, type:'choice', ok:true})) });
+  }
+  S.save();
+  return {words: ws.length, id: book.id};
+}
+
+function load(route){
+  return new Promise(res => {
+    frame.onload = () => res();
+    frame.src = '../dist/' + encodeURIComponent('背单词.html') + '?t=' + Date.now() + '#/' + route;
+  });
+}
+function doc(){ return frame.contentDocument; }
+function has(t){ return doc() && doc().body.textContent.indexOf(t) >= 0; }
+function key(k){
+  frame.contentWindow.document.dispatchEvent(new frame.contentWindow.KeyboardEvent('keydown', {key:k, bubbles:true}));
+}
+function click(sel){
+  const el = doc().querySelector(sel);
+  if (!el) { ok(false, '找不到元素 ' + sel); return false; }
+  el.click(); return true;
+}
+
+(async function(){
+ try{
+  const seeded = await seed();
+  log('[0] 预置数据：' + seeded.words + ' 词条');
+
+  const routes = [
+    ['home', ['快捷开始','今日进度']],
+    ['books', ['CET-4 蓝本','浏览词条']],
+    ['quiz', ['选题范围','开始测试']],
+    ['notebook', ['生词本']],
+    ['stats', ['近 14 天答题量','正确率：四种口径','学习趋势变化','掌握程度分布','知识点（分类）掌握情况','薄弱知识点分布','统计口径说明']],
+    ['settings', ['数据备份与迁移','生词本与目标']],
+    ['import', ['选择文件','支持 CSV']]
+  ];
+  log('[1] 逐页渲染');
+  for (const [r, keys] of routes){
+    await load(r); await sleep(400);
+    const missing = keys.filter(k => !has(k));
+    ok(missing.length === 0, '#/' + r + ' 渲染正常', missing.length ? '缺少：' + missing.join('，') : '');
+  }
+
+  log('[2] 交互：快速开始 → 作答 → 反馈');
+  await load('home'); await sleep(400);
+  click('#q-all'); await sleep(500);
+  ok(has('第') && doc().querySelector('.qcard'), '进入答题页并渲染题干');
+  const firstIsChoice = !!doc().querySelector('.opt');
+  if (firstIsChoice){
+    doc().querySelector('[data-o="0"]').click();
+  } else {
+    const inp = doc().querySelector('#fin'); inp.value = 'test'; 
+    inp.dispatchEvent(new frame.contentWindow.KeyboardEvent('keydown', {key:'Enter', bubbles:true}));
+  }
+  await sleep(300);
+  ok(!!doc().querySelector('.judge'), '提交后立即出现判定与正确答案');
+  ok(!!doc().querySelector('.answer-box'), '展示正确答案卡片（含释义）');
+
+  log('[3] 键盘操作');
+  const before = doc().querySelector('#qi') ? doc().querySelector('#qi').textContent : '';
+  key('Enter'); await sleep(300);
+  const after = doc().querySelector('#qi') ? doc().querySelector('#qi').textContent : '';
+  ok(before !== after || has('测试结果'), 'Enter 进入下一题/结算', before + ' -> ' + after);
+  if (has('第') && doc().querySelector('.opt')) {
+    key('1'); await sleep(250);
+    ok(!!doc().querySelector('.judge'), '数字键 1 可选答案');
+  }
+  key('Escape'); await sleep(400);
+  ok(has('错题回顾') || has('可否再来'), 'Esc 可提前结束并查看结果', has('错题回顾') ? '进入结果页' : '');
+  if (has('测试结果')) ok(has('正确率'), '结果页展示正确率');
+
+  log('[4] Alt+数字切换页面');
+  const ev = new frame.contentWindow.KeyboardEvent('keydown', {key:'3', altKey:true, bubbles:true});
+  frame.contentWindow.document.dispatchEvent(ev);
+  await sleep(400);
+  ok(has('浏览词条') || has('词库管理'), 'Alt+3 跳到词库管理');
+
+  log('[5] 生词本联动');
+  await load('notebook'); await sleep(400);
+  const nbCount = Object.keys(WM.Store.state.notebook).length;
+  ok(true, '生词本条目数（跨页共享同一份 localStorage）：' + nbCount);
+
+  log('[6] 删除词库弹窗：取消 / 确认');
+  await load('books'); await sleep(400);
+  let errs = [];
+  frame.contentWindow.addEventListener('error', e => { errs.push(e.message); });
+  const booksBefore = frame.contentWindow.WM.Store.state.books.length;
+  ok(booksBefore > 0, '删除前存在词库', String(booksBefore) + ' 个');
+  click('[data-del]'); await sleep(300);
+  ok(!!doc().querySelector('#modal-root .mask'), '点击「删除」弹出确认框');
+  const cancelBtn = Array.from(doc().querySelectorAll('.modal-ft .btn'))
+    .find(b => b.textContent.trim() === '取消');
+  ok(!!cancelBtn, '确认框含「取消」按钮');
+  if (cancelBtn) {
+    cancelBtn.click(); await sleep(300);
+    cancelBtn.click();            // 再点一次：应无异常、无副作用
+    await sleep(200);
+  }
+  ok(!doc().querySelector('#modal-root .mask'), '点「取消」立即关闭弹窗');
+  const booksAfterCancel = frame.contentWindow.WM.Store.state.books.length;
+  ok(booksAfterCancel === booksBefore, '点「取消」不删除任何词库', booksBefore + ' -> ' + booksAfterCancel);
+  ok(errs.length === 0, '取消流程无 JS 异常', errs.join(' | '));
+  click('[data-del]'); await sleep(300);
+  const closeX = doc().querySelector('#modal-root [data-close]');
+  if (closeX) { closeX.click(); await sleep(250); }
+  ok(!doc().querySelector('#modal-root .mask') && frame.contentWindow.WM.Store.state.books.length === booksBefore,
+     '右上 ✕ 关闭同样不删除');
+  click('[data-del]'); await sleep(300);
+  const dangerBtn = Array.from(doc().querySelectorAll('.modal-ft .btn'))
+    .find(b => b.textContent.trim() === '删除');
+  if (dangerBtn) { dangerBtn.click(); await sleep(400); }
+  const booksAfter = frame.contentWindow.WM.Store.state.books.length;
+  ok(!doc().querySelector('#modal-root .mask') && booksAfter === booksBefore - 1,
+     '确认删除仍正常工作（校验未相互影响）', booksBefore + ' -> ' + booksAfter);
+
+  log('[7] 选题范围：使用频次 level 维度');
+  await seed();                       // 上一节删掉了词库，这里重新预置
+  await load('quiz'); await sleep(400);
+  ok(has('使用频次'), '配置页出现「使用频次」维度');
+  ok(!!doc().querySelector('[data-lvclear]') && !!doc().querySelector('input[data-lv="high"]'),
+     '渲染「不限」与高频/中频/低频选择项');
+  click('[data-n="999"]'); await sleep(300);       // 题量设为「不限」以观察可选词数
+  const avail0 = parseInt(doc().querySelector('#avail').textContent, 10);
+  ok(avail0 > 50, '不限题量时展示完整可选词数', String(avail0));
+  ok(doc().querySelector('[data-lvclear]').classList.contains('on'), '未选时「不限」处于选中态');
+  doc().querySelector('input[data-lv="high"]').parentNode.click();
+  await sleep(350);
+  const availH = parseInt(doc().querySelector('#avail').textContent, 10);
+  ok(doc().querySelector('input[data-lv="high"]').parentNode.classList.contains('on'), '点击后高频 chip 变为选中');
+  ok(availH > 0 && availH < avail0, '可选词数按高频收窄', avail0 + ' -> ' + availH);
+  ok(!doc().querySelector('[data-lvclear]').classList.contains('on'), '选择后「不限」取消选中态');
+  const midLabel = doc().querySelector('input[data-lv="mid"]').parentNode;
+  midLabel.click(); await sleep(350);
+  const availHM = parseInt(doc().querySelector('#avail').textContent, 10);
+  ok(availHM > availH, '多选叠加中频后可选词数增加', availH + ' -> ' + availHM);
+  doc().querySelector('[data-lvclear]').click(); await sleep(350);
+  ok(parseInt(doc().querySelector('#avail').textContent, 10) === avail0, '点「不限」清空选择并恢复可选词数', String(avail0));
+  ok(frame.contentWindow.WM.cfg.levels.length === 0, '清空后 levels 为空（等价于不限）');
+
+  document.title = failed ? ('FAIL-' + failed) : 'PASS';
+  log('');
+  log(failed ? ('=== 失败 ' + failed + ' 项 ===') : '=== 全部通过 ===');
+ } catch(e){
+  document.title = 'ERROR';
+  log('EXCEPTION: ' + e.message + '\n' + e.stack);
+ }
+})();
+</script>
+</body></html>

@@ -1,0 +1,49 @@
+{
+  "words": [
+    {
+      "index": 1,
+      "word": "abandon",
+      "phonetic": "/əˈbændən/",
+      "phonetic_us": "/əˈbændən/",
+      "pos": "n./vt.",
+      "meaning": "放任；遗弃；放弃；抛弃",
+      "collocation": "abandon ship（弃船）",
+      "derivative": "过去式/过去分词 abandoned；abandonment 放弃",
+      "example": "The crew prepared to abandon ship in an orderly fashion.",
+      "example_cn": "全体船员秩序井然地准备弃船。",
+      "level": "中频",
+      "stage": "高中",
+      "freq_rank": 2182
+    },
+    {
+      "index": 2,
+      "word": "benefit",
+      "phonetic": "/ˈbenɪfɪt/",
+      "phonetic_us": "/ˈbenɪfɪt/",
+      "pos": "n./v.",
+      "meaning": "益处；好处；有益于",
+      "collocation": "benefit from（从…中获益）",
+      "derivative": "复数 benefits；beneficial 有益的",
+      "example": "Regular exercise benefits both body and mind.",
+      "example_cn": "规律运动对身心都有益处。",
+      "level": "高频",
+      "stage": "四级",
+      "freq_rank": 1204
+    },
+    {
+      "index": 3,
+      "word": "capable",
+      "phonetic": "/ˈkeɪpəbl/",
+      "phonetic_us": "/ˈkeɪpəbl/",
+      "pos": "adj.",
+      "meaning": "有能力的；能干的",
+      "collocation": "be capable of（能够）",
+      "derivative": "capability 能力；capably 能干地",
+      "example": "She is quite capable of handling the task alone.",
+      "example_cn": "她完全有能力独自处理这项任务。",
+      "level": "中频",
+      "stage": "高中",
+      "freq_rank": 2601
+    }
+  ]
+}
