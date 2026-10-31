@@ -22,7 +22,7 @@ async function fetchText(p){ const r = await fetch(p); return await r.text(); }
 
   /* 1. CSV（UTF-8 BOM，含引号换行字段） */
   log('[1] CSV 解析与字段自动映射');
-  const csv = await fetchText('../samples/CET4-批次1-初中词.csv');
+  const csv = await fetchText('../samples/cet4_vocab_初中.csv');
   const delim = P.detectDelimiter(csv);
   const t1 = P.toObjects(P.parseDelimited(csv, delim));
   const map1 = P.guessMapping(t1.headers);
@@ -35,11 +35,13 @@ async function fetchText(p){ const r = await fetch(p); return await r.text(); }
   ok(map1.example === 'example', 'example -> example', String(map1.example));
   ok(map1.exampleCn === 'example_cn', 'exampleCn -> example_cn', String(map1.exampleCn));
   ok(map1.stage === 'stage', 'stage -> stage', String(map1.stage));
-  ok(t1.rows.length === 200, '行数 200', String(t1.rows.length));
+  ok(t1.rows.length === 1618, '行数 1618（初中全量）', String(t1.rows.length));
 
   const bw1 = WM.buildWords(t1.rows, map1, {categoryMode:'column', categoryColumn:'stage'});
-  ok(bw1.valid.length === 200, '有效词条 200', String(bw1.valid.length));
-  ok(bw1.errors.length === 0, '格式错误 0', String(bw1.errors.length));
+  // dvd / vcd 两个词条 meaning 为空 → 应被拦截，不静默放行
+  ok(bw1.valid.length === 1616, '有效词条 1616', String(bw1.valid.length));
+  ok(bw1.errors.length === 2 && bw1.errors.every(e => String(e.reason).indexOf('缺【释义】') >= 0),
+     '缺释义的 2 行被判为格式错误', bw1.errors.map(e => e.preview).join(','));
   ok(bw1.valid[0].word.cat === '初中', '分类取自 stage 列', bw1.valid[0].word.cat);
 
   /* 2. 重复检测 */
@@ -56,27 +58,39 @@ async function fetchText(p){ const r = await fetch(p); return await r.text(); }
   const book = S.createBook('CET-4 全量', 'CET-4');
   let cnt = {new:0, updated:0, linked:0, skipped:0};
   bw1.valid.forEach(v => cnt[S.upsertWord(v.word, book.id, 'skip')]++);
-  ok(S.allWords().length === 200, '第一次导入后 200 词', String(S.allWords().length));
-  ok(S.bookWords(book.id).length === 200, '词库内词条 200');
+  ok(S.allWords().length === 1616, '第一次导入后 1616 词', String(S.allWords().length));
+  ok(S.bookWords(book.id).length === 1616, '词库内词条 1616');
   let cnt2 = {new:0, updated:0, linked:0, skipped:0};
   bw1.valid.forEach(v => cnt2[S.upsertWord(v.word, book.id, 'skip')]++);
-  ok(S.allWords().length === 200 && cnt2.skipped === 200, '重复导入不再新增（跳过 200）', JSON.stringify(cnt2));
+  ok(S.allWords().length === 1616 && cnt2.skipped === 1616, '重复导入不再新增（跳过 1616）', JSON.stringify(cnt2));
 
-  const csv2 = await fetchText('../samples/CET4-批次2-高中词.csv');
+  const csv2 = await fetchText('../samples/cet4_vocab_高中.csv');
   const t2 = P.toObjects(P.parseDelimited(csv2, P.detectDelimiter(csv2)));
   const bw2 = WM.buildWords(t2.rows, P.guessMapping(t2.headers), {categoryMode:'column', categoryColumn:'stage'});
   bw2.valid.forEach(v => S.upsertWord(v.word, book.id, 'skip'));
-  ok(S.bookWords(book.id).length === 400, '第二批追加后 400 词', String(S.bookWords(book.id).length));
-  const csv3 = await fetchText('../samples/CET4-批次3-四级新增.csv');
+  ok(S.bookWords(book.id).length === 3106, '第二批追加后 3106 词（1616+1490）', String(S.bookWords(book.id).length));
+  const csv3 = await fetchText('../samples/cet4_vocab_四级.csv');
   const t3 = P.toObjects(P.parseDelimited(csv3, P.detectDelimiter(csv3)));
   const bw3 = WM.buildWords(t3.rows, P.guessMapping(t3.headers), {categoryMode:'column', categoryColumn:'stage'});
   bw3.valid.forEach(v => S.upsertWord(v.word, book.id, 'skip'));
-  // 注意：蓝本中 atop 一词的 meaning 字段为空，应被判为格式错误而跳过 → 599 而非 600
-  ok(bw3.valid.length === 199, '第三批有效词条 199（atop 缺释义被拦截）', String(bw3.valid.length));
-  ok(bw3.errors.length === 1 && bw3.errors[0].reason.indexOf('缺【释义】') >= 0, '缺释义的行被标记为格式错误',
-     bw3.errors[0] ? bw3.errors[0].term || bw3.errors[0].preview : '');
-  ok(S.bookWords(book.id).length === 599, '第三批追加后 599 词', String(S.bookWords(book.id).length));
+  // 四级批次中 atop/quart/radish/repent/thermostat 五个词 meaning 为空 → 被拦截
+  ok(bw3.valid.length === 1853, '第三批有效词条 1853（5 词缺释义被拦截）', String(bw3.valid.length));
+  ok(bw3.errors.length === 5 && bw3.errors.some(e => String(e.preview).indexOf('atop') >= 0),
+     '缺释义的行被标记为格式错误', bw3.errors.map(e => e.preview).join(','));
+  ok(S.bookWords(book.id).length === 4959, '第三批追加后 4959 词', String(S.bookWords(book.id).length));
   ok(S.bookWords(book.id)[0].t === 'a', '保持导入顺序（蓝本首词 a）', S.bookWords(book.id)[0].t);
+
+  /* 3b. 第四批：跨批重复 + 无 stage 列时用「统一填写」定分类 */
+  log('    [3b] 第四批 高考688（跨批重复 + 统一分类）');
+  const csv4 = await fetchText('../samples/高考英语核心高频688词汇_已处理.csv');
+  const t4 = P.toObjects(P.parseDelimited(csv4, P.detectDelimiter(csv4)));
+  const bw4 = WM.buildWords(t4.rows, P.guessMapping(t4.headers), {categoryMode:'fixed', categoryValue:'高考688'});
+  ok(bw4.valid.length === 688 && bw4.errors.length === 0, '第四批 688 条全部有效', String(bw4.valid.length));
+  ok(bw4.valid[0].word.cat === '高考688', '无 stage 列时用统一填写兜底分类', String(bw4.valid[0].word.cat));
+  let c4 = {new:0, updated:0, linked:0, skipped:0};
+  bw4.valid.forEach(v => c4[S.upsertWord(v.word, book.id, 'skip')]++);
+  ok(c4.new === 64 && c4.skipped === 624, '跨批重复识别：新增 64、跳过 624', JSON.stringify(c4));
+  ok(S.bookWords(book.id).length === 5023, '第四批追加后 5023 词（去重后）', String(S.bookWords(book.id).length));
 
   /* 4. JSON */
   log('[4] JSON 解析');
@@ -165,13 +179,13 @@ async function fetchText(p){ const r = await fetch(p); return await r.text(); }
   S.pushHistory({ id:'t1', startedAt: Date.now(), finishedAt: Date.now()+30000, label:'测试',
                   total:10, correct:7, cfg:cfg, items:[] });
   const st = S.stats();
-  ok(st.words === 599, '统计：总词条 599', String(st.words));
+  ok(st.words === 5023, '统计：总词条 5023', String(st.words));
   ok(st.answered >= 8, '统计：累计作答', String(st.answered));
   ok(S.dailySeries(14).length === 14, '近 14 天序列');
   const full = S.exportBackup(true), light = S.exportBackup(false);
   ok(full.length > light.length, '完整备份大于轻量备份', Math.round(full.length/1024)+'KB / '+Math.round(light.length/1024)+'KB');
   S.clearProgress(); const restored = S.importBackup(full, true);
-  ok(restored === true && S.allWords().length === 599, '备份恢复词库');
+  ok(restored === true && S.allWords().length === 5023, '备份恢复词库');
 
   /* 10. 真实蓝本全量压力测试 */
   log('[10] 全量蓝本压力测试（4966 词）');

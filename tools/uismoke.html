@@ -23,10 +23,17 @@ async function seed(){
     defaultCount:20, order:'random', types:{choice:true, fill:true}, direction:'mix',
     streakTarget:3, dailyGoal:40, autoNotebook:true, showPhonetic:true, historyMax:80 } };
   const book = S.createBook('CET-4 蓝本', 'CET-4');
-  for (const f of ['../samples/CET4-批次1-初中词.csv','../samples/CET4-批次2-高中词.csv','../samples/CET4-批次3-四级新增.csv']){
+  // 四份官方示例：前三份自带 stage 列（分类取自文件列），688 只有基础字段（分类统一填写）
+  const batches = [
+    ['../samples/cet4_vocab_初中.csv', { categoryMode:'column', categoryColumn:'stage' }],
+    ['../samples/cet4_vocab_高中.csv', { categoryMode:'column', categoryColumn:'stage' }],
+    ['../samples/cet4_vocab_四级.csv', { categoryMode:'column', categoryColumn:'stage' }],
+    ['../samples/高考英语核心高频688词汇_已处理.csv', { categoryMode:'fixed', categoryValue:'高考688' }]
+  ];
+  for (const [f, opt] of batches){
     const text = await (await fetch(f)).text();
     const t = P.toObjects(P.parseDelimited(text, P.detectDelimiter(text)));
-    const bw = WM.buildWords(t.rows, P.guessMapping(t.headers), {categoryMode:'column', categoryColumn:'stage'});
+    const bw = WM.buildWords(t.rows, P.guessMapping(t.headers), opt);
     bw.valid.forEach(v => S.upsertWord(v.word, book.id, 'skip'));
   }
   S.reindex();

@@ -2,19 +2,17 @@
 """
 生成示例/模板文件：
   1) samples/模板-标准字段.csv / .json / .tsv   —— 导入模板（含全部支持字段）
-  2) samples/CET4-批次1~3.csv                  —— 从 CET-4 蓝本切出的三批示例，演示「分批多次导入」
-用法： python tools/make_samples.py [蓝本CSV路径]
+  2) samples/cet4_vocab_*.csv + 高考英语核心高频688词汇_已处理.csv
+                                              —— 正式词库由用户自备，不由此脚本生成
+用法： python tools/make_samples.py
 """
 import csv
 import json
 import os
-import sys
 from collections import OrderedDict
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SAMPLES = os.path.join(ROOT, 'samples')
-BLUEPRINT = sys.argv[1] if len(sys.argv) > 1 else r'G:\workbuddy\2026-10-31-00-16-35\cet4-vocab\cet4_vocab_full.csv'
-
 COLS = ['index', 'word', 'phonetic', 'phonetic_us', 'pos', 'meaning',
         'collocation', 'derivative', 'example', 'example_cn', 'level', 'stage', 'freq_rank']
 
@@ -65,31 +63,7 @@ def main():
     # JSON 另一种常见外壳：{words:[...]}
     write_json(os.path.join(SAMPLES, '模板-words外壳.json'), {'words': TEMPLATE_ROWS})
     print('已生成 5 个模板文件：samples/')
-
-    if not os.path.exists(BLUEPRINT):
-        print('未找到蓝本文件，跳过批次示例：%s' % BLUEPRINT)
-        return
-
-    with open(BLUEPRINT, 'r', encoding='utf-8-sig') as f:
-        rows = list(csv.DictReader(f))
-
-    batches = [
-        ('CET4-批次1-初中词.csv', lambda r: r.get('stage') == '初中', 200),
-        ('CET4-批次2-高中词.csv', lambda r: r.get('stage') == '高中', 200),
-        ('CET4-批次3-四级新增.csv', lambda r: r.get('stage') == '四级', 200),
-    ]
-    for name, pred, limit in batches:
-        picked = [r for r in rows if pred(r)][:limit]
-        out = OrderedDict()
-        # 重排 index，打散原来的字母顺序模拟真实分批
-        new_rows = []
-        for i, r in enumerate(picked, 1):
-            r = dict(r)
-            r['index'] = i
-            new_rows.append(r)
-        write_csv(os.path.join(SAMPLES, name), new_rows)
-        out[name] = len(new_rows)
-        print('已生成 %s（%d 词）' % (name, len(new_rows)))
+    print('说明：samples/cet4_vocab_初中·高中·四级.csv 与 高考英语核心高频688词汇_已处理.csv 为正式词库，由用户自备并直接随仓库提交，本脚本不再生成。')
 
 
 if __name__ == '__main__':
